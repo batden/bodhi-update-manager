@@ -1,4 +1,4 @@
-# Bodhi Update Manager
+.# Bodhi Update Manager
 
 ![Platform](https://img.shields.io/badge/platform-Linux-lightgrey)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
@@ -72,7 +72,6 @@ bodhi-update-manager
 ```
 ## Dependencies
 ```
-Core:
 python3
 python3-gi
 gir1.2-gtk-3.0
