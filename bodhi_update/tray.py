@@ -50,7 +50,7 @@ def _read_pref(key: str, default: bool = True) -> bool:
     path = os.path.join(config_home, APP_NAME, "prefs.json")
 
     try:
-        with open(path, "r", encoding="utf-8") as config:
+        with open(path, encoding="utf-8") as config:
             data = json.load(config)
             if isinstance(data, dict):
                 return bool(data.get(key, default))

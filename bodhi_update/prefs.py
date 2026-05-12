@@ -48,7 +48,7 @@ class PreferencesStore:
             return prefs
 
         try:
-            with open(path, "r", encoding="utf-8") as handle:
+            with open(path, encoding="utf-8") as handle:
                 data: Any = json.load(handle)
         except OSError as exc:
             log.warning("Could not read prefs file at %s: %s", path, exc)
