@@ -977,7 +977,7 @@ class UpdateManagerWindow(Gtk.Window):  # pylint: disable=too-many-instance-attr
                 markup += f"\n<small>{desc_esc}</small>"
         return markup
 
-    def populate_store(self, updates: List[UpdateItem]) -> None:
+    def populate_store(self, updates: list[UpdateItem]) -> None:
         """Clear the ListStore and populate it with *updates*, applying markup and icons."""
         self.store.freeze_notify()
         try:
@@ -1019,9 +1019,9 @@ class UpdateManagerWindow(Gtk.Window):  # pylint: disable=too-many-instance-attr
         finally:
             self.store.thaw_notify()
 
-    def _selected_package_names(self) -> Dict[str, List[str]]:
+    def _selected_package_names(self) -> dict[str, list[str]]:
         """Return a mapping of backend_id -> [list of selected raw package names]."""
-        grouped: Dict[str, List[str]] = {}
+        grouped: dict[str, list[str]] = {}
         for row in self.filter_model:
             if row[Col.SELECTED]:
                 b_id = row[Col.BACKEND]
@@ -1040,7 +1040,7 @@ class UpdateManagerWindow(Gtk.Window):  # pylint: disable=too-many-instance-attr
 
     def _finish_startup_load(
         self,
-        updates: List[UpdateItem],
+        updates: list[UpdateItem],
         total_bytes: int,
         error_msgs: list[str],
     ) -> bool:

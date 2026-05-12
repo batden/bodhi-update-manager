@@ -48,7 +48,7 @@ class FlatpakBackend(UpdateBackend):
         except (OSError, subprocess.TimeoutExpired):
             return False
 
-    def check_busy(self) -> Tuple[bool, str]:
+    def check_busy(self) -> tuple[bool, str]:
         return False, ""
 
     def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
@@ -60,7 +60,7 @@ class FlatpakBackend(UpdateBackend):
     # ------------------------------------------------------------------ #
 
     @staticmethod
-    def _run(argv: List[str], timeout: int = 30) -> str:
+    def _run(argv: list[str], timeout: int = 30) -> str:
         """Run *argv*, return stdout text on rc=0, empty string on failure."""
         try:
             result = subprocess.run(
@@ -77,7 +77,7 @@ class FlatpakBackend(UpdateBackend):
             return ""
         return result.stdout or ""
 
-    def _query_scope(self, scope_flag: str) -> List[Tuple[str, str, str]]:
+    def _query_scope(self, scope_flag: str) -> list[tuple[str, str, str]]:
         """Run remote-ls --updates for *scope_flag* ('--system' or '--user').
 
         Returns list of (app_id, branch, origin) tuples.
@@ -92,13 +92,13 @@ class FlatpakBackend(UpdateBackend):
         return self._parse_ls_output(out)
 
     @staticmethod
-    def _parse_ls_output(stdout: str) -> List[Tuple[str, str, str]]:
+    def _parse_ls_output(stdout: str) -> list[tuple[str, str, str]]:
         """Parse tab-separated `remote-ls --updates` output.
 
         Each line: application \\t branch \\t origin
         Skips blank lines and any header line (starts with non-app text).
         """
-        rows: List[Tuple[str, str, str]] = []
+        rows: list[tuple[str, str, str]] = []
         for line in stdout.strip().splitlines():
             stripped = line.strip()
             if not stripped:
@@ -115,10 +115,10 @@ class FlatpakBackend(UpdateBackend):
             rows.append((app_id, branch, origin))
         return rows
 
-    def _installed_versions(self) -> Dict[str, str]:
+    def _installed_versions(self) -> dict[str, str]:
         """Return {app_id: installed_version} for all installed Flatpaks."""
         # Query both scopes and merge.
-        installed: Dict[str, str] = {}
+        installed: dict[str, str] = {}
         for scope in ("--system", "--user"):
             out = self._run(
                 ["flatpak", scope, "list", "--columns=application,version"],
@@ -136,14 +136,14 @@ class FlatpakBackend(UpdateBackend):
     # Backend interface                                                    #
     # ------------------------------------------------------------------ #
 
-    def get_updates(self) -> Tuple[List[UpdateItem], int]:
+    def get_updates(self) -> tuple[list[UpdateItem], int]:
         """Return Flatpak apps/runtimes that have an available update.
 
         Queries both --system and --user scopes explicitly so that the result
         matches what `flatpak update` (which also checks both) would show.
         """
         seen: set = set()
-        pending: List[Tuple[str, str, str]] = []
+        pending: list[tuple[str, str, str]] = []
 
         for scope in ("--system", "--user"):
             for row in self._query_scope(scope):
@@ -156,7 +156,7 @@ class FlatpakBackend(UpdateBackend):
             return [], 0
 
         installed = self._installed_versions()
-        updates: List[UpdateItem] = []
+        updates: list[UpdateItem] = []
 
         for app_id, branch, origin in pending:
             installed_version = installed.get(app_id, "-")
@@ -178,7 +178,7 @@ class FlatpakBackend(UpdateBackend):
         return updates, 0
 
     def build_install_command(self,
-                              packages: List[str] | None = None) -> list[str]:
+                              packages: list[str] | None = None) -> list[str]:
         if not packages:
             discovered, _ = self.get_updates()
             packages = [item.name for item in discovered]

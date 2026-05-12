@@ -298,11 +298,11 @@ class AptBackend(UpdateBackend):
         return True
 
     def build_install_command(self,
-                              packages: List[str] | None = None) -> list[str]:
+                              packages: list[str] | None = None) -> list[str]:
         """Return argv for privilege-escalated APT install/upgrade (passed to VTE, no shell)."""
         return build_upgrade_argv(packages)
 
-    def check_busy(self) -> Tuple[bool, str]:
+    def check_busy(self) -> tuple[bool, str]:
         """Return (is_busy, message) via layered /proc-based detection.
 
         Layer 1 — process scan: walks /proc/\u27e8pid\u27e9/comm and /proc/\u27e8pid\u27e9/cmdline,
@@ -355,7 +355,7 @@ class AptBackend(UpdateBackend):
 
     @staticmethod
     def _parse_refresh_output(
-            result: subprocess.CompletedProcess) -> Tuple[bool, str]:
+            result: subprocess.CompletedProcess) -> tuple[bool, str]:
         """Interpret a completed apt-get update subprocess result. Returns (success, message)."""
         stdout_text = result.stdout or ""
         stderr_text = result.stderr or ""
@@ -376,7 +376,7 @@ class AptBackend(UpdateBackend):
         )
         return False, f"Failed to refresh package lists. ({first_err})"
 
-    def refresh(self, sentinel_path: str | None = None) -> Tuple[bool, str]:
+    def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
         """Run a privileged 'apt-get update' via the root helper and return '(success,
         message)'."""
         privilege_tool = find_privilege_tool()
@@ -412,7 +412,7 @@ class AptBackend(UpdateBackend):
         summary: str,
         held_names: set,
         kept_back_names: set,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Return (constraint, description) for a single package."""
         if pkg_name in held_names:
             return CONSTRAINT_HELD, summary
@@ -425,7 +425,7 @@ class AptBackend(UpdateBackend):
         pkg: apt.package.Package,
         held_names: set,
         kept_back_names: set,
-    ) -> Tuple["UpdateItem", str]:
+    ) -> tuple["UpdateItem", str]:
         """Build an UpdateItem and return (item, constraint) for one upgradable package."""
         installed_version = pkg.installed.version if pkg.installed else "unknown"
         candidate_version = pkg.candidate.version if pkg.candidate else "unknown"
@@ -447,13 +447,13 @@ class AptBackend(UpdateBackend):
             constraint=constraint,
         ), constraint
 
-    def get_updates(self) -> Tuple[List[UpdateItem], int]:
+    def get_updates(self) -> tuple[list[UpdateItem], int]:
         """Read the local APT cache and return '(updates, total_download_bytes)'."""
         held_names = _get_held_packages()
         kept_back_names = _get_kept_back_packages()
         cache = apt.Cache()
         cache.open()
-        updates: List[UpdateItem] = []
+        updates: list[UpdateItem] = []
         total_bytes = 0
         for pkg in cache:
             if not (pkg.is_installed and pkg.is_upgradable):

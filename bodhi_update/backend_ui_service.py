@@ -125,7 +125,7 @@ class BackendUIService:
 
     def build_install_target_command(
         self,
-        grouped_packages: Dict[str, List[str]] | None,
+        grouped_packages: dict[str, list[str]] | None,
     ) -> list[str]:
         """Return install argv for the selected packages.
 

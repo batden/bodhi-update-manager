@@ -162,7 +162,7 @@ class PreferencesState:
 
     show_notifications: bool
     show_held_packages: bool
-    backend_states: List[Tuple[str, str, bool]]
+    backend_states: list[tuple[str, str, bool]]
 
 
 class PreferencesDialog(Gtk.Dialog):
@@ -186,7 +186,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.add_button(labels.cancel_label, Gtk.ResponseType.CANCEL)
         self.add_button(labels.apply_label, Gtk.ResponseType.APPLY)
 
-        self._backend_checks: Dict[str, Gtk.CheckButton] = {}
+        self._backend_checks: dict[str, Gtk.CheckButton] = {}
 
         content = self.get_content_area()
         content.set_spacing(8)

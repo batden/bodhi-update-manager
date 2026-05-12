@@ -167,7 +167,7 @@ class BackendRegistry:
     """Singleton registry holding all instantiated update backends."""
 
     def __init__(self) -> None:
-        self._backends: Dict[str, UpdateBackend] = {}
+        self._backends: dict[str, UpdateBackend] = {}
 
     def register(self, backend: UpdateBackend) -> None:
         """Register a backend instance."""
@@ -184,11 +184,11 @@ class BackendRegistry:
         """Return a registered backend by ID, or None if not found."""
         return self._backends.get(backend_id)
 
-    def get_all_backends(self) -> List[UpdateBackend]:
+    def get_all_backends(self) -> list[UpdateBackend]:
         """Return all registered backends."""
         return list(self._backends.values())
 
-    def get_available_backends(self) -> List[UpdateBackend]:
+    def get_available_backends(self) -> list[UpdateBackend]:
         """Return only backends supported on this system."""
         return [b for b in self._backends.values() if b.is_available()]
 

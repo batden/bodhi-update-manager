@@ -49,7 +49,7 @@ class SnapBackend(UpdateBackend):
         except (OSError, subprocess.TimeoutExpired):
             return False
 
-    def check_busy(self) -> Tuple[bool, str]:
+    def check_busy(self) -> tuple[bool, str]:
         return False, ""
 
     def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
@@ -61,9 +61,9 @@ class SnapBackend(UpdateBackend):
     # ------------------------------------------------------------------ #
 
     @staticmethod
-    def _parse_snap_table(stdout: str) -> List[List[str]]:
+    def _parse_snap_table(stdout: str) -> list[list[str]]:
         """Return non-header, non-blank rows from a snap tabular output."""
-        rows: List[List[str]] = []
+        rows: list[list[str]] = []
         for line in stdout.strip().splitlines():
             stripped = line.strip()
             if not stripped or stripped.lower().startswith("name"):
@@ -73,7 +73,7 @@ class SnapBackend(UpdateBackend):
                 rows.append(parts)
         return rows
 
-    def _installed_versions(self) -> Dict[str, str]:
+    def _installed_versions(self) -> dict[str, str]:
         """Return {snap_name: installed_version} from `snap list`."""
         try:
             result = subprocess.run(
@@ -88,7 +88,7 @@ class SnapBackend(UpdateBackend):
             return {}
         if result.returncode != 0 or not result.stdout:
             return {}
-        installed: Dict[str, str] = {}
+        installed: dict[str, str] = {}
         # snap list columns: Name  Version  Rev  Tracking  Publisher  Notes
         for row in self._parse_snap_table(result.stdout):
             if len(row) >= 2:
@@ -99,7 +99,7 @@ class SnapBackend(UpdateBackend):
     # Backend interface                                                    #
     # ------------------------------------------------------------------ #
 
-    def get_updates(self) -> Tuple[List[UpdateItem], int]:
+    def get_updates(self) -> tuple[list[UpdateItem], int]:
         """Return snaps that have an available refresh.
 
         `snap refresh --list` reports only snaps with a pending update; it does
@@ -126,7 +126,7 @@ class SnapBackend(UpdateBackend):
         # Fetch installed versions for honest population of installed_version.
         installed = self._installed_versions()
 
-        updates: List[UpdateItem] = []
+        updates: list[UpdateItem] = []
         # snap refresh --list columns: Name  Version  Rev  Size  Publisher  Notes
         for row in self._parse_snap_table(result.stdout):
             if len(row) < 2:
@@ -150,7 +150,7 @@ class SnapBackend(UpdateBackend):
         return updates, 0
 
     def build_install_command(self,
-                              packages: List[str] | None = None) -> list[str]:
+                              packages: list[str] | None = None) -> list[str]:
         if not packages:
             discovered, _ = self.get_updates()
             packages = [item.name for item in discovered]
