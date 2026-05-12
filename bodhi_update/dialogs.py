@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from gettext import bindtextdomain, gettext as _, textdomain
+from gettext import bindtextdomain, textdomain
+from gettext import gettext as _
 
 import gi
 
@@ -16,6 +17,7 @@ bindtextdomain(APP_NAME, "/usr/share/locale")
 textdomain(APP_NAME)
 
 from bodhi_update._version import __version__
+
 ABOUT_TEXT = _(
     """Update Manager
 

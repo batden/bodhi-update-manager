@@ -4,18 +4,18 @@ from __future__ import annotations
 
 import subprocess
 
-from bodhi_update.plugins.apt import(
+from bodhi_update.models import (
+    CONSTRAINT_BLOCKED,
+    CONSTRAINT_HELD,
+    CONSTRAINT_NORMAL,
+)
+from bodhi_update.plugins.apt import (
     AptBackend,
     _determine_category,
     _is_kernel_update,
     _is_security_update,
     _output_mentions_network_error,
     _stderr_mentions_lock,
-)
-from bodhi_update.models import (
-    CONSTRAINT_BLOCKED,
-    CONSTRAINT_HELD,
-    CONSTRAINT_NORMAL,
 )
 
 

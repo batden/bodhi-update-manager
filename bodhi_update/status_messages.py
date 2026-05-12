@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from gettext import bindtextdomain, gettext as _, ngettext as N_, textdomain
+from gettext import bindtextdomain, textdomain
+from gettext import gettext as _
+from gettext import ngettext as N_
 from typing import Iterable
 
 from bodhi_update.models import CONSTRAINT_BLOCKED, CONSTRAINT_HELD

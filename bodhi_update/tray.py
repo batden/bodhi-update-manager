@@ -13,11 +13,12 @@ import os
 import threading
 from typing import TYPE_CHECKING
 
+import gi
+
 from bodhi_update.backends import get_registry, initialize_registry
-from bodhi_update.models import CONSTRAINT_HELD, CONSTRAINT_BLOCKED
+from bodhi_update.models import CONSTRAINT_BLOCKED, CONSTRAINT_HELD
 from bodhi_update.utils import get_pkg_severity
 
-import gi
 gi.require_version("GdkPixbuf", "2.0")
 gi.require_version("Gtk", "3.0")
 

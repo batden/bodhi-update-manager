@@ -6,7 +6,8 @@ import logging
 import os
 import random
 import threading
-from gettext import bindtextdomain, gettext as _, textdomain
+from gettext import bindtextdomain, textdomain
+from gettext import gettext as _
 
 from gi.repository import GLib
 

@@ -3,15 +3,16 @@
 # pylint: disable=too-many-lines  # UpdateManagerWindow is one cohesive GTK class
 from __future__ import annotations
 
-from enum import IntEnum
-from gettext import bindtextdomain, gettext as _, textdomain
 import argparse
 import logging
 import os
-from pathlib import Path
 import subprocess
 import sys
 import threading
+from enum import IntEnum
+from gettext import bindtextdomain, textdomain
+from gettext import gettext as _
+from pathlib import Path
 
 # gi.require_version() must be called before any gi.repository imports.
 import gi  # noqa: E402
@@ -21,27 +22,40 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Vte", "2.91")
 from gi.repository import Gdk, Gio, GLib, Gtk, Pango, Vte  # noqa: E402
 
+from bodhi_update._version import __version__
 from bodhi_update.backend_ui_service import BackendUIService  # noqa: E402
 from bodhi_update.dialogs import (  # noqa: E402
-    AboutDialog, PreferencesDialog, PreferencesLabels, PreferencesState,
+    AboutDialog,
+    PreferencesDialog,
+    PreferencesLabels,
+    PreferencesState,
 )
 from bodhi_update.hold_controller import HoldController  # noqa: E402
 from bodhi_update.install_controller import InstallController  # noqa: E402
 from bodhi_update.models import (  # noqa: E402
-    CONSTRAINT_BLOCKED, CONSTRAINT_HELD, CONSTRAINT_NORMAL, UpdateItem,
+    CONSTRAINT_BLOCKED,
+    CONSTRAINT_HELD,
+    CONSTRAINT_NORMAL,
+    UpdateItem,
 )
 from bodhi_update.prefs import PreferencesStore  # noqa: E402
 from bodhi_update.refresh_controller import RefreshController  # noqa: E402
 from bodhi_update.status_messages import (  # noqa: E402
-    CountStatusOptions, format_selected_count_status,
-    format_update_count_status, hidden_held_count, ready_status_text,
+    CountStatusOptions,
+    format_selected_count_status,
+    format_update_count_status,
+    hidden_held_count,
+    ready_status_text,
     with_restart_suffix,
 )
 from bodhi_update.tray import TrayIcon  # noqa: E402
 from bodhi_update.utils import (  # noqa: E402
-    find_privilege_tool, format_size, get_pkg_severity, reboot_required, validate_deb_files
+    find_privilege_tool,
+    format_size,
+    get_pkg_severity,
+    reboot_required,
+    validate_deb_files,
 )
-from bodhi_update._version import __version__
 
 APP_NAME = "bodhi-update-manager"
 

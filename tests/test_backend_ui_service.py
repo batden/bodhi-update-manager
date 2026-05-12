@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from bodhi_update.backend_ui_service import BackendUIService, BackendLoadResult
+from bodhi_update.backend_ui_service import BackendLoadResult, BackendUIService
 from bodhi_update.backends import BackendMeta
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
