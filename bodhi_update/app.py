@@ -25,46 +25,32 @@ from gi.repository import Gdk, Gio, GLib, Gtk, Pango, Vte  # noqa: E402
 from bodhi_update._version import __version__
 from bodhi_update.backend_ui_service import BackendUIService  # noqa: E402
 from bodhi_update.dialogs import (  # noqa: E402
-    AboutDialog,
-    PreferencesDialog,
-    PreferencesLabels,
-    PreferencesState,
+    AboutDialog, PreferencesDialog, PreferencesLabels, PreferencesState,
 )
 from bodhi_update.hold_controller import HoldController  # noqa: E402
 from bodhi_update.install_controller import InstallController  # noqa: E402
 from bodhi_update.models import (  # noqa: E402
-    CONSTRAINT_BLOCKED,
-    CONSTRAINT_HELD,
-    CONSTRAINT_NORMAL,
-    UpdateItem,
+    CONSTRAINT_BLOCKED, CONSTRAINT_HELD, CONSTRAINT_NORMAL, UpdateItem,
 )
 from bodhi_update.prefs import PreferencesStore  # noqa: E402
 from bodhi_update.refresh_controller import RefreshController  # noqa: E402
 from bodhi_update.status_messages import (  # noqa: E402
-    CountStatusOptions,
-    format_selected_count_status,
-    format_update_count_status,
-    hidden_held_count,
-    ready_status_text,
+    CountStatusOptions, format_selected_count_status,
+    format_update_count_status, hidden_held_count, ready_status_text,
     with_restart_suffix,
 )
 from bodhi_update.tray import TrayIcon  # noqa: E402
 from bodhi_update.utils import (  # noqa: E402
-    find_privilege_tool,
-    format_size,
-    get_pkg_severity,
-    reboot_required,
+    find_privilege_tool, format_size, get_pkg_severity, reboot_required,
     validate_deb_files,
 )
 
 APP_NAME = "bodhi-update-manager"
 
 INFO_LOG_FORMAT = "[%(levelname)s] %(message)s"
-DEBUG_LOG_FORMAT = (
-    "%(levelname)-5s "
-    "[%(name)s:%(filename)s:%(lineno)d] "
-    "%(message)s"
-)
+DEBUG_LOG_FORMAT = ("%(levelname)-5s "
+                    "[%(name)s:%(filename)s:%(lineno)d] "
+                    "%(message)s")
 logging.basicConfig(level=logging.INFO, format=INFO_LOG_FORMAT)
 log = logging.getLogger(APP_NAME)
 
@@ -109,19 +95,17 @@ def normalize_file(name: str) -> str:
     path = Path(name).expanduser()
     if not path.is_absolute():
         path = Path.cwd() / path
-    return(path)
+    return (path)
 
 
 class UpdateManagerWindow(Gtk.Window):  # pylint: disable=too-many-instance-attributes
     """Main application window: update list, install screen, preferences, and tray hooks."""
 
-    def __init__(
-        self,
-        deb_path: str | None = None,
-        security: bool = False,
-        kernel: bool = False,
-        no_cache: bool = False
-    ) -> None:
+    def __init__(self,
+                 deb_path: str | None = None,
+                 security: bool = False,
+                 kernel: bool = False,
+                 no_cache: bool = False) -> None:
         super().__init__(title=_("Update Manager"))
         self._no_cache = no_cache
         self._security = security
@@ -1206,7 +1190,6 @@ class UpdateManagerWindow(Gtk.Window):  # pylint: disable=too-many-instance-attr
 
         self.refresh_controller.start_refresh()
 
-
     def on_install_selected(self,
                             _button: Gtk.Button | Gtk.MenuItem | None) -> None:
         """Install all checked packages using the appropriate backend."""
@@ -1372,51 +1355,43 @@ class UpdateManagerApplication(Gtk.Application):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="UpdateManager",
-        description="A lightweight graphical update manager for Debian/Ubuntu distros"
-    )
+        description=
+        "A lightweight graphical update manager for Debian/Ubuntu distros")
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-k", "--only-kernel",
-         action="store_true",
-         help="only include kernel updates"
-     )
-    group.add_argument(
-        "-s", "--only-security",
-        action="store_true",
-        help="only include security updates"
-    )
+    group.add_argument("-k",
+                       "--only-kernel",
+                       action="store_true",
+                       help="only include kernel updates")
+    group.add_argument("-s",
+                       "--only-security",
+                       action="store_true",
+                       help="only include security updates")
 
-    parser.add_argument(
-        "-v", "--version",
-        action="version",
-        version=f"%(prog)s {__version__}"
-    )
+    parser.add_argument("-v",
+                        "--version",
+                        action="version",
+                        version=f"%(prog)s {__version__}")
 
-    parser.add_argument(
-        "-l", "--license",
-        action="store_true",
-        help="show license information and exit"
-    )
+    parser.add_argument("-l",
+                        "--license",
+                        action="store_true",
+                        help="show license information and exit")
 
-    parser.add_argument(
-        "-t", "--tray",
-        action="store_true",
-        help="start in systray"
-    )
+    parser.add_argument("-t",
+                        "--tray",
+                        action="store_true",
+                        help="start in systray")
 
-    parser.add_argument(
-        "-d", "--debug",
-        action="store_true",
-        help="display debug information"
-    )
+    parser.add_argument("-d",
+                        "--debug",
+                        action="store_true",
+                        help="display debug information")
 
-    parser.add_argument(
-        "deb_files",
-        nargs="*",
-        metavar="DEB",
-        help="deb files to install"
-    )
+    parser.add_argument("deb_files",
+                        nargs="*",
+                        metavar="DEB",
+                        help="deb files to install")
 
     return parser
 
@@ -1435,7 +1410,7 @@ def main() -> None:
         print(LICENSE_TEXT)
         return 0
     if args.only_kernel:
-       cli_args.append("kernel")
+        cli_args.append("kernel")
     if args.only_security:
         cli_args.append("security")
     if args.tray:
@@ -1445,7 +1420,9 @@ def main() -> None:
     # If deb file provided → install mode
 
     if args.deb_files and args.tray:
-        print("UpdateManager error: tray mode does not support deb file installation.", file=sys.stderr)
+        print(
+            "UpdateManager error: tray mode does not support deb file installation.",
+            file=sys.stderr)
         exit(1)
     elif args.deb_files and not args.tray:
         try:
@@ -1457,6 +1434,7 @@ def main() -> None:
 
     app = UpdateManagerApplication(deb_path=deb_path)
     app.run(cli_args)
+
 
 if __name__ == "__main__":
 
