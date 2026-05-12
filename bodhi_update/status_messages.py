@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from gettext import bindtextdomain, textdomain
 from gettext import gettext as _
 from gettext import ngettext as N_
-from typing import Iterable
+from collections.abc import Iterable
 
 from bodhi_update.models import CONSTRAINT_BLOCKED, CONSTRAINT_HELD
 from bodhi_update.utils import format_size, reboot_required
