@@ -9,18 +9,44 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "GPL-3.0-or-later"}
 authors = [
-  {name = "Joseph Wiley", email = "flux.abyss@proton.me"}
+  {name = "Joseph Wiley", email = "flux.abyss@proton.me"},
+  {name = "Robert Wiley", email = "ylee@bodhilinux.com"}
 ]
+# the core app is not installable from PyPI without distro packages
 dependencies = []
 
-[tool.setuptools.dynamic]
-version = {attr = "bodhi_update_manager._version.__version__"}
+[project.optional-dependencies]
+magic = [
+  "python-magic",
+]
+test = [
+  "pytest",
+]
+lint = [
+  "ruff",
+  "pylint",
+  "flake8",
+]
+dev = [
+  "pytest",
+  "ruff",
+  "pylint",
+  "flake8",
+  "yapf",
+  "python-magic",
+]
 
-[tool.setuptools]
-package-dir = {"" = "src"}
+[tool.setuptools.dynamic]
+version = {attr = "bodhi_update._version.__version__"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["bodhi_update*"]
+
+[project.entry-points."bodhi_update.backends"]
+apt = "bodhi_update.plugins.apt:AptBackend"
+flatpak = "bodhi_update.plugins.flatpak:FlatpakBackend"
+snap = "bodhi_update.plugins.snap:SnapBackend"
 
 [project.urls]
 homepage = "https://github.com/flux-abyss/bodhi-update-manager"
@@ -28,8 +54,16 @@ issues = "https://github.com/flux-abyss/bodhi-update-manager/issues"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-q"
 
+[tool.ruff]
+line-length = 100
+
 [tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
 # Because of gi.require_version we get this a lot
 ignore = ["E402"]
+
+[tool.yapf]
+based_on_style = "google"
