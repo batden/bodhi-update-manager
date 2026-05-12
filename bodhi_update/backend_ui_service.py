@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List
 
 from bodhi_update.backends import get_registry, initialize_registry
 from bodhi_update.models import CONSTRAINT_NORMAL, UpdateItem

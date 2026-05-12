@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from importlib import import_module
 from importlib.metadata import entry_points
 from pathlib import Path
-from typing import Dict, List
 
 from bodhi_update.models import UpdateItem
 

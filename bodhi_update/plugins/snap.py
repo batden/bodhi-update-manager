@@ -3,7 +3,6 @@
 # pylint: disable=duplicate-code  # build_install_command mirrors flatpak; required by ABC contract
 import shutil
 import subprocess
-from typing import Dict, List, Tuple
 
 from bodhi_update.backends import BackendMeta, UpdateBackend
 from bodhi_update.models import UpdateItem

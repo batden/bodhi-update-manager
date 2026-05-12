@@ -2,7 +2,6 @@
 
 import shutil
 import subprocess
-from typing import Dict, List, Tuple
 
 from bodhi_update.backends import BackendMeta, UpdateBackend
 from bodhi_update.models import UpdateItem

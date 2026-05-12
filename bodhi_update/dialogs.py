@@ -5,7 +5,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from gettext import bindtextdomain, gettext as _, textdomain
-from typing import Dict, List, Tuple
 
 import gi
 

@@ -12,7 +12,6 @@ from pathlib import Path
 import subprocess
 import sys
 import threading
-from typing import Dict, List
 
 # gi.require_version() must be called before any gi.repository imports.
 import gi  # noqa: E402
