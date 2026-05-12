@@ -84,7 +84,7 @@ class TrayIcon:
     _POLL_INTERVAL = 15 * 60  # 15 minutes
     _INITIAL_DELAY = 5  # seconds after startup before first check
 
-    def __init__(self, app: "UpdateManagerApplication") -> None:
+    def __init__(self, app: UpdateManagerApplication) -> None:
         """Initialise the tray icon and schedule the first background poll."""
         self._app = app
         self._indicator = None

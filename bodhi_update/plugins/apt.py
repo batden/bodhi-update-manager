@@ -425,7 +425,7 @@ class AptBackend(UpdateBackend):
         pkg: apt.package.Package,
         held_names: set,
         kept_back_names: set,
-    ) -> tuple["UpdateItem", str]:
+    ) -> tuple[UpdateItem, str]:
         """Build an UpdateItem and return (item, constraint) for one upgradable package."""
         installed_version = pkg.installed.version if pkg.installed else "unknown"
         candidate_version = pkg.candidate.version if pkg.candidate else "unknown"

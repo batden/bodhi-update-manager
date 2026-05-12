@@ -1316,7 +1316,7 @@ class UpdateManagerApplication(Gtk.Application):
     def get_or_create_window(
         self,
         no_cache: bool = False,
-    ) -> "UpdateManagerWindow":
+    ) -> UpdateManagerWindow:
         if self._window is None:
             self._window = UpdateManagerWindow(
                 deb_path=self._deb_path,
