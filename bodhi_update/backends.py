@@ -132,7 +132,6 @@ class UpdateBackend(ABC):
         """
         return False, ""
 
-    # pylint: disable=unused-argument
     def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
         """Refresh the local list of available updates.
 

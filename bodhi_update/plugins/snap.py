@@ -1,6 +1,5 @@
 """Snap-backed update discovery for the Bodhi Update Manager."""
 
-# pylint: disable=duplicate-code  # build_install_command mirrors flatpak; required by ABC contract
 import shutil
 import subprocess
 

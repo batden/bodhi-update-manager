@@ -34,7 +34,7 @@ except (ValueError, ImportError):
     gi.require_version('AppIndicator3', '0.1')
     from gi.repository import AppIndicator3 as appindicator
 
-from gi.repository import GLib, Gtk  # noqa: E402
+from gi.repository import GLib, Gtk
 
 if TYPE_CHECKING:
     from bodhi_update.app import UpdateManagerApplication
@@ -158,7 +158,7 @@ class TrayIcon:
             # if self._last_count > 0:
             #     GLib.idle_add(self._maybe_trigger_refresh, win)
 
-    # pylint: disable=no-self-use; FIXME
+    # FIXME: no  self use
     def _maybe_trigger_refresh(self, win: object) -> bool:
         """Idle callback: start a background refresh if one isn't already running."""
         if not getattr(win, "refresh_in_progress", False) and \

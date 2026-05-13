@@ -12,7 +12,7 @@ CONSTRAINT_NORMAL = "normal"
 
 
 @dataclass(frozen=True)
-class UpdateItem:  # pylint: disable=too-many-instance-attributes
+class UpdateItem:
     """Represent a single available package update."""
 
     name: str

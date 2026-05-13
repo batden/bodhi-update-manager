@@ -9,12 +9,12 @@ from gettext import bindtextdomain, textdomain
 from gettext import gettext as _
 from pathlib import Path
 
-import gi  # noqa: E402
+import gi
 
 gi.require_version("Vte", "2.91")
-from gi.repository import GLib, Vte  # noqa: E402
+from gi.repository import GLib, Vte
 
-from bodhi_update.utils import find_privilege_tool, validate_deb_files  # noqa: E402
+from bodhi_update.utils import find_privilege_tool, validate_deb_files
 
 APP_NAME = "bodhi-update-manager"
 log = logging.getLogger(APP_NAME)

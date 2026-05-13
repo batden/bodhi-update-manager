@@ -68,9 +68,9 @@ class HoldController:
             except OSError:
                 pass
 
-    def reload_apt_rows(self) -> None:  # pylint: disable=too-many-locals
+    def reload_apt_rows(self) -> None:
         """Re-query APT rows only, leaving non-APT rows intact."""
-        from bodhi_update.app import Col  # noqa: PLC0415
+        from bodhi_update.app import Col
         non_apt = [
             list(row) for row in self.window.store if row[Col.BACKEND] != "apt"
         ]
