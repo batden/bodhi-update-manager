@@ -183,15 +183,27 @@ class TrayIcon:
     # ------------------------------------------------------------------
 
     def _on_poll_timer(self) -> bool:
-        """Timer callback: start a daemon thread to query cached updates."""
-        if _read_pref("show_notifications"):
-            if not getattr(self, "_poll_running", False):
-                self._poll_running = True
-                threading.Thread(target=self._poll_worker_wrapper, daemon=True).start()
-        # Reschedules after each poll.
-        self._poll_source_id = GLib.timeout_add_seconds(self._POLL_INTERVAL,
-                                                        self._on_poll_timer)
-        return False
+        """Periodic timer callback for background polling."""
+
+        if not _read_pref("show_notifications"):
+            log.debug("Background polling disabled")
+            return True
+
+        if self._poll_running:
+            log.debug("Skipping poll: worker already running")
+            return True
+
+        log.debug("Starting background poll thread")
+
+        self._poll_running = True
+
+        threading.Thread(
+            target=self._poll_worker_wrapper,
+            daemon=True,
+            name="bodhi-update-poller",
+        ).start()
+
+        return True
 
     def _poll_worker_wrapper(self):
         """Thread entry point for polling.
@@ -201,45 +213,65 @@ class TrayIcon:
         try:
             self._poll_worker()
         finally:
+            log.debug("Background poll finished")
             self._poll_running = False
 
     def _poll_worker(self) -> None:
-        """Read cached update state from backends (no refresh/privilege tool).
+        """Read cached update state from backends (no refresh/privilege tool)."""
+        log.debug("Background poll started")
 
-        Runs on a daemon thread; posts indicator update back to the main loop.
-        """
         # Fixme: 1. this is a lot of code to wrap a try block around.
         #           Should be more specific on points of failure.
         #        2. should add log.debug msgs are excepts.
+
         try:
-            initialize_registry()  # idempotent
-            count = 0
-            severity = "low"
-            for backend in get_registry().get_all_backends():
-                try:
-                    updates, _ = backend.get_updates()
-                    for update in updates:
-                        if getattr(update, "constraint",
-                                   None) in (CONSTRAINT_HELD,
-                                             CONSTRAINT_BLOCKED):
-                            continue
-                        count += 1
-                        pkg_severity = get_pkg_severity(
-                            getattr(update, "name", "") or "",
-                            getattr(update, "category", "") or "",
-                            getattr(update, "backend", "") or "",
-                        )
-                        if pkg_severity == "high":
-                            severity = "high"
-                        elif pkg_severity == "medium" and severity != "high":
-                            severity = "medium"
-                except (OSError, RuntimeError, ValueError, AttributeError):
-                    # Skip failed backends and keep going.
-                    continue
-            GLib.idle_add(self.set_update_count, count, severity)
-        except (ImportError, OSError, RuntimeError, AttributeError):
-            # Don't let a background check take down the tray.
-            pass
+            initialize_registry()
+        except Exception as exc:
+            log.exception("Failed to initialize registry in background poll")
+            GLib.idle_add(self.set_update_count, 0, "low")
+            return
+
+        count = 0
+        severity = "low"
+        registry = get_registry()
+
+        for backend in registry.get_all_backends():
+            backend_id = getattr(backend, "backend_id", getattr(backend, "__class__",
+                                 str(backend)).__name__)
+            try:
+                log.debug("Polling backend: %s", backend_id)
+                updates, _ = backend.get_updates()
+
+                backend_count = 0
+                for update in updates:
+                    if getattr(update, "constraint", None) in (CONSTRAINT_HELD, CONSTRAINT_BLOCKED):
+                        continue
+
+                    count += 1
+                    backend_count += 1
+
+                    pkg_severity = get_pkg_severity(
+                        getattr(update, "name", "") or "",
+                        getattr(update, "category", "") or "",
+                        getattr(update, "backend", "") or "",)
+
+                    if pkg_severity == "high":
+                        severity = "high"
+                    elif pkg_severity == "medium" and severity != "high":
+                        severity = "medium"
+
+                log.debug("Backend %s → %d updates (total: %d, severity: %s)",
+                          backend_id, backend_count, count, severity)
+
+            except (OSError, RuntimeError, ValueError, AttributeError) as exc:
+                log.debug("Backend %s skipped: %s", backend_id, exc)
+                continue
+            except Exception as exc:
+                log.exception("Unexpected error in backend: %s", backend_id)
+                continue
+
+        log.debug("Poll completed: %d updates, severity=%s", count, severity)
+        GLib.idle_add(self.set_update_count, count, severity)
 
     # ------------------------------------------------------------------
     # Indicator update

@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/flux-abyss/bodhi-update-manager/"
 "issues\n"
 "POT-Creation-Date: 2026-05-08 17:33-0400\n"
-"PO-Revision-Date: 2026-04-08 17:34+0200\n"
+"PO-Revision-Date: 2026-05-13 16:24+0200\n"
 "Last-Translator: diekrz2 <diekrz2@bodhilinux.com>\n"
 "Language-Team: Bodhi Team\n"
 "Language: it\n"
@@ -141,9 +141,9 @@ msgid "System"
 msgstr "Sistema"
 
 #: bodhi_update/app.py:535
-#, fuzzy, python-format
+#, python-format
 msgid "Show %(name)s updates"
-msgstr "Mostra aggiornamenti Snap"
+msgstr "Mostra aggiornamenti %(name)s"
 
 #: bodhi_update/app.py:545
 msgid "Show notifications"
@@ -276,7 +276,6 @@ msgstr ""
 "licenses/>."
 
 #: bodhi_update/dialogs.py:48
-#, fuzzy
 msgid ""
 "Website\n"
 "\n"
@@ -284,10 +283,9 @@ msgid ""
 msgstr ""
 "Sito web\n"
 "\n"
-"    https://github.com/flux-abyss/bodhi-update-manager"
+"https://github.com/flux-abyss/bodhi-update-manager"
 
 #: bodhi_update/dialogs.py:53
-#, fuzzy
 msgid ""
 "Credits\n"
 "\n"
@@ -300,22 +298,20 @@ msgid ""
 msgstr ""
 "Riconoscimenti\n"
 "\n"
-"    Lead Developer:\n"
-"        Joseph “flux.abyss” Wiley\n"
+"Lead Developer:\n"
+"    Joseph “flux.abyss” Wiley\n"
 "\n"
-"    Contributori:\n"
-"        Robert “ylee” Wiley\n"
-"        Diego “diekrz2” K."
+"Contributori:\n"
+"    Robert “ylee” Wiley\n"
+"    Diego “diekrz2” K."
 
 #: bodhi_update/dialogs.py:63
-#, fuzzy
 msgid ""
 "Copyright © 2026 Joseph “flux.abyss” Wiley\n"
 "\n"
 msgstr ""
 "Copyright © 2026 Joseph “flux.abyss” Wiley\n"
 "\n"
-"    "
 
 #: bodhi_update/dialogs.py:71
 msgid "Website"
@@ -405,11 +401,11 @@ msgid "Unknown"
 msgstr "Sconosciuto"
 
 #: bodhi_update/status_messages.py:64
-#, fuzzy, python-format
+#, python-format
 msgid "%(count)d update available · Download: %(size)s"
 msgid_plural "%(count)d updates available · Download: %(size)s"
 msgstr[0] "%(count)d aggiornamento disponibile · Da scaricare: %(size)s"
-msgstr[1] "%(count)d aggiornamento disponibile · Da scaricare: %(size)s"
+msgstr[1] "%(count)d aggiornamenti disponibili · Da scaricare: %(size)s"
 
 #: bodhi_update/status_messages.py:74
 #, python-format
@@ -423,18 +419,18 @@ msgid "%(message)s (includes %(extras)s)"
 msgstr "%(message)s (include %(extras)s)"
 
 #: bodhi_update/status_messages.py:85
-#, fuzzy, python-format
+#, python-format
 msgid "%(n)d held/blocked package hidden"
 msgid_plural "%(n)d held/blocked packages hidden"
 msgstr[0] "%(n)d pacchetto trattenuto/bloccato nascosto"
-msgstr[1] "%(n)d pacchetto trattenuto/bloccato nascosto"
+msgstr[1] "%(n)d pacchetti trattenuti/bloccati nascosti"
 
 #: bodhi_update/status_messages.py:113
-#, fuzzy, python-format
+#, python-format
 msgid "%(count)d update selected · Download: %(size)s"
 msgid_plural "%(count)d updates selected · Download: %(size)s"
 msgstr[0] "%(count)d aggiornamento selezionato · Da scaricare: %(size)s"
-msgstr[1] "%(count)d aggiornamento selezionato · Da scaricare: %(size)s"
+msgstr[1] "%(count)d aggiornamenti selezionati · Da scaricare: %(size)s"
 
 #: data/applications//bodhi-update-manager.in:6
 #: data/applications//bodhi-update-manager-tray.in:6

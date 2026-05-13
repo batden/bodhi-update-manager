@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import inspect
 import logging
+import threading
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from importlib import import_module
@@ -15,6 +16,7 @@ from bodhi_update.models import UpdateItem
 APP_NAME = "bodhi-update-manager"
 log = logging.getLogger(APP_NAME)
 _API = "1"
+
 
 @dataclass(frozen=True)
 class BackendMeta:
@@ -214,6 +216,7 @@ class BackendRegistry:
         return bool(self._backends)
 
 
+_REGISTRY_LOCK = threading.Lock()
 _REGISTRY = BackendRegistry()
 
 
@@ -355,8 +358,10 @@ def _iter_backend_classes() -> list[type[UpdateBackend]]:
 def initialize_registry() -> None:
     """Discover and register all available backend plugins. Idempotent."""
     reg = get_registry()
-    if reg.is_initialized():
-        return
+
+    with _REGISTRY_LOCK:
+        if reg.is_initialized():
+            return
 
     for backend_cls in _iter_backend_classes():
         try:
