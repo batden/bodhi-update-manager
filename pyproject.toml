@@ -62,8 +62,9 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
-# Because of gi.require_version we get this a lot
-ignore = ["E402"]
+# E402: Because of gi.require_version
+# I001:  Conflicts with yapf style sometimes
+ignore = ["E402", "I001"]
 
 [tool.yapf]
 based_on_style = "google"
