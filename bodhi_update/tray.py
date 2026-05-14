@@ -42,6 +42,15 @@ if TYPE_CHECKING:
 APP_NAME = "bodhi-update-manager"
 log = logging.getLogger(APP_NAME)
 
+_POLL_ERRORS = (
+    ImportError,
+    OSError,
+    RuntimeError,
+    ValueError,
+    AttributeError,
+    TypeError,
+)
+
 
 def _read_pref(key: str, default: bool = True) -> bool:
     """Read a single boolean preference from the shared prefs file."""
@@ -60,6 +69,7 @@ def _read_pref(key: str, default: bool = True) -> bool:
 
     return default
 
+
 # ---------------------------------------------------------------------------
 # Tray implementation
 # ---------------------------------------------------------------------------
@@ -76,9 +86,9 @@ class TrayIcon:
     _ICON_SIZE = 22  # px — standard system-tray icon size
 
     _ICON_BY_SEVERITY: dict[str, str] = {
-        "low":    "notification_cyan",
+        "low": "notification_cyan",
         "medium": "notification_amber",
-        "high":   "notification_red",
+        "high": "notification_red",
     }
 
     # Background poll interval (seconds).
@@ -101,8 +111,7 @@ class TrayIcon:
             self._ICON_NAME,
             appindicator.IndicatorCategory.APPLICATION_STATUS,
         )
-        self._indicator.set_status(
-            appindicator.IndicatorStatus.ACTIVE)
+        self._indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
         self._indicator.set_menu(menu)
 
         self._poll_source_id = GLib.timeout_add_seconds(
@@ -217,16 +226,12 @@ class TrayIcon:
             self._poll_running = False
 
     def _poll_worker(self) -> None:
-        """Read cached update state from backends (no refresh/privilege tool)."""
+        """Read cached update state from backends without refreshing package lists."""
         log.debug("Background poll started")
-
-        # Fixme: 1. this is a lot of code to wrap a try block around.
-        #           Should be more specific on points of failure.
-        #        2. should add log.debug msgs are excepts.
 
         try:
             initialize_registry()
-        except Exception as exc:
+        except _POLL_ERRORS:
             log.exception("Failed to initialize registry in background poll")
             GLib.idle_add(self.set_update_count, 0, "low")
             return
@@ -236,15 +241,19 @@ class TrayIcon:
         registry = get_registry()
 
         for backend in registry.get_all_backends():
-            backend_id = getattr(backend, "backend_id", getattr(backend, "__class__",
-                                 str(backend)).__name__)
+            backend_id = getattr(backend, "backend_id",
+                                 backend.__class__.__name__)
+
             try:
                 log.debug("Polling backend: %s", backend_id)
                 updates, _ = backend.get_updates()
 
                 backend_count = 0
                 for update in updates:
-                    if getattr(update, "constraint", None) in (CONSTRAINT_HELD, CONSTRAINT_BLOCKED):
+                    if getattr(update, "constraint", None) in (
+                            CONSTRAINT_HELD,
+                            CONSTRAINT_BLOCKED,
+                    ):
                         continue
 
                     count += 1
@@ -253,21 +262,24 @@ class TrayIcon:
                     pkg_severity = get_pkg_severity(
                         getattr(update, "name", "") or "",
                         getattr(update, "category", "") or "",
-                        getattr(update, "backend", "") or "",)
+                        getattr(update, "backend", "") or "",
+                    )
 
                     if pkg_severity == "high":
                         severity = "high"
                     elif pkg_severity == "medium" and severity != "high":
                         severity = "medium"
 
-                log.debug("Backend %s → %d updates (total: %d, severity: %s)",
-                          backend_id, backend_count, count, severity)
+                log.debug(
+                    "Backend %s -> %d updates (total: %d, severity: %s)",
+                    backend_id,
+                    backend_count,
+                    count,
+                    severity,
+                )
 
-            except (OSError, RuntimeError, ValueError, AttributeError) as exc:
-                log.debug("Backend %s skipped: %s", backend_id, exc)
-                continue
-            except Exception as exc:
-                log.exception("Unexpected error in backend: %s", backend_id)
+            except _POLL_ERRORS:
+                log.exception("Backend %s skipped during tray poll", backend_id)
                 continue
 
         log.debug("Poll completed: %d updates, severity=%s", count, severity)
@@ -280,7 +292,8 @@ class TrayIcon:
         """Return the icon name that matches the current update state."""
         if count <= 0:
             return self._ICON_NAME
-        return self._ICON_BY_SEVERITY.get(severity, self._ICON_BY_SEVERITY["low"])
+        return self._ICON_BY_SEVERITY.get(severity,
+                                          self._ICON_BY_SEVERITY["low"])
 
     def set_update_count(self, count: int, severity: str = "medium") -> None:
         """Update indicator state from cached update count."""
