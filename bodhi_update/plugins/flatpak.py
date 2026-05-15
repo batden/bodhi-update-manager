@@ -16,12 +16,12 @@ class FlatpakBackend(UpdateBackend):
     """Update backend that queries installed Flatpak applications."""
 
     meta = BackendMeta(
-        backend_id = "flatpak",
-        display_name = "Flatpak Packages",
-        API = _API,
-        filter_group = "flatpak",
-        filter_label = "FlatPak",
-        filter_sort_order = 200,
+        backend_id="flatpak",
+        display_name="Flatpak Packages",
+        API=_API,
+        filter_group="flatpak",
+        filter_label="FlatPak",
+        filter_sort_order=200,
         show_in_preferences=True,
         icon_name="package-x-generic-symbolic"
     )

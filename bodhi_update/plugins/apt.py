@@ -289,9 +289,9 @@ class AptBackend(UpdateBackend):
     """Update backend for Debian/Ubuntu APT package management."""
 
     meta = BackendMeta(
-        backend_id = "apt",
-        display_name = "Debian/Ubuntu Packages",
-        API = _API,
+        backend_id="apt",
+        display_name="Debian/Ubuntu Packages",
+        API=_API,
     )
 
     def is_available(self) -> bool:

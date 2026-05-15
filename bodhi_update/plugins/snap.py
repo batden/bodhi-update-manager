@@ -11,12 +11,12 @@ class SnapBackend(UpdateBackend):
     """Update backend that queries installed Snap packages."""
 
     meta = BackendMeta(
-        backend_id = "snap",
-        display_name = "Snap Packages",
-        API = _API,
-        filter_group = "snap",
-        filter_label = "Snap",
-        filter_sort_order = 200,
+        backend_id="snap",
+        display_name="Snap Packages",
+        API=_API,
+        filter_group="snap",
+        filter_label="Snap",
+        filter_sort_order=200,
         show_in_preferences=True,
         icon_name="package-x-generic-symbolic"
     )
