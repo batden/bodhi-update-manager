@@ -24,23 +24,35 @@ from gi.repository import Gdk, Gio, GLib, Gtk, Pango, Vte
 from bodhi_update._version import __version__
 from bodhi_update.backend_ui_service import BackendUIService
 from bodhi_update.dialogs import (
-    AboutDialog, PreferencesDialog, PreferencesLabels, PreferencesState,
+    AboutDialog,
+    PreferencesDialog,
+    PreferencesLabels,
+    PreferencesState,
 )
 from bodhi_update.hold_controller import HoldController
 from bodhi_update.install_controller import InstallController
 from bodhi_update.models import (
-    CONSTRAINT_BLOCKED, CONSTRAINT_HELD, CONSTRAINT_NORMAL, UpdateItem,
+    CONSTRAINT_BLOCKED,
+    CONSTRAINT_HELD,
+    CONSTRAINT_NORMAL,
+    UpdateItem,
 )
 from bodhi_update.prefs import PreferencesStore
 from bodhi_update.refresh_controller import RefreshController
 from bodhi_update.status_messages import (
-    CountStatusOptions, format_selected_count_status,
-    format_update_count_status, hidden_held_count, ready_status_text,
+    CountStatusOptions,
+    format_selected_count_status,
+    format_update_count_status,
+    hidden_held_count,
+    ready_status_text,
     with_restart_suffix,
 )
 from bodhi_update.tray import TrayIcon
 from bodhi_update.utils import (
-    find_privilege_tool, format_size, get_pkg_severity, reboot_required,
+    find_privilege_tool,
+    format_size,
+    get_pkg_severity,
+    reboot_required,
     validate_deb_files,
 )
 
@@ -747,8 +759,7 @@ class UpdateManagerWindow(Gtk.Window):
                 message = _("Loading package information...")
 
             self._loading_label.set_markup(
-                f"<b>{GLib.markup_escape_text(message)}</b>"
-            )
+                f"<b>{GLib.markup_escape_text(message)}</b>")
             self.updates_stack.set_visible_child_name("loading")
             self._loading_spinner.start()
             self.set_status(message)
@@ -1142,8 +1153,7 @@ class UpdateManagerWindow(Gtk.Window):
 
         from bodhi_update.install_controller import get_helper_path
         try:
-            subprocess.Popen(
-                [privilege_tool, get_helper_path(), "reboot"])
+            subprocess.Popen([privilege_tool, get_helper_path(), "reboot"])
         except OSError as exc:
             self.set_status(_("Failed to initiate reboot: %(exc)s") % {"exc": exc})
 
@@ -1307,10 +1317,9 @@ class UpdateManagerWindow(Gtk.Window):
         """Handle terminal copy keyboard shortcuts."""
         state = event.state & Gtk.accelerator_get_default_mod_mask()
 
-        if (
-            state == (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
-            and event.keyval in (Gdk.KEY_c, Gdk.KEY_C)
-        ):
+        if (state == (Gdk.ModifierType.CONTROL_MASK |
+                      Gdk.ModifierType.SHIFT_MASK) and
+                event.keyval in (Gdk.KEY_c, Gdk.KEY_C)):
             if terminal.get_has_selection():
                 terminal.copy_clipboard()
             return True
