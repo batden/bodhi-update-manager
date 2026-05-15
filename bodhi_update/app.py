@@ -492,6 +492,14 @@ class UpdateManagerWindow(Gtk.Window):
         self.install_terminal.set_scrollback_lines(10000)
         self.install_terminal.set_cursor_blink_mode(Vte.CursorBlinkMode.ON)
         self.install_terminal.set_font(Pango.FontDescription("monospace 10"))
+        self.install_terminal.connect(
+            "button-press-event",
+            self._on_terminal_button_press,
+        )
+        self.install_terminal.connect(
+            "key-press-event",
+            self._on_terminal_key_press,
+        )
         self.install_terminal.connect("child-exited",
                                       self.on_install_child_exited)
         self.install_terminal.connect("contents-changed",
@@ -1265,6 +1273,49 @@ class UpdateManagerWindow(Gtk.Window):
             self._finish_install_success()
         else:
             self._finish_install_failure(status)
+
+    def _on_terminal_button_press(
+        self,
+        terminal: Vte.Terminal,
+        event: Gdk.EventButton,
+    ) -> bool:
+        """Show terminal context menu on right-click."""
+        if event.type != Gdk.EventType.BUTTON_PRESS or event.button != 3:
+            return False
+
+        menu = Gtk.Menu()
+
+        copy_item = Gtk.MenuItem(label=_("Copy"))
+        copy_item.set_sensitive(terminal.get_has_selection())
+        copy_item.connect("activate", lambda _item: terminal.copy_clipboard())
+        menu.append(copy_item)
+
+        select_all_item = Gtk.MenuItem(label=_("Select All"))
+        select_all_item.connect("activate", lambda _item: terminal.select_all())
+        menu.append(select_all_item)
+
+        menu.show_all()
+        menu.popup_at_pointer(event)
+
+        return True
+
+    def _on_terminal_key_press(
+        self,
+        terminal: Vte.Terminal,
+        event: Gdk.EventKey,
+    ) -> bool:
+        """Handle terminal copy keyboard shortcuts."""
+        state = event.state & Gtk.accelerator_get_default_mod_mask()
+
+        if (
+            state == (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
+            and event.keyval in (Gdk.KEY_c, Gdk.KEY_C)
+        ):
+            if terminal.get_has_selection():
+                terminal.copy_clipboard()
+            return True
+
+        return False
 
 
 class UpdateManagerApplication(Gtk.Application):
