@@ -6,9 +6,17 @@ Files: *
 Copyright: 2026 Joseph Wiley <flux.abyss@proton.me>
 License: GPL-3.0-or-later
 
+Files: data/icons/*
+Copyright: 2026 Joseph Wiley, Diego “diekrz2” K., Glen MacArthur
+License: CC-BY-SA-4.0
+ This work is licensed under the Creative Commons Attribution-ShareAlike
+ 4.0 International License.
+ .
+ See: https://creativecommons.org/licenses/by-sa/4.0/
+
 Files: debian/*
 Copyright: 2026 Robert Wiley <ylee@bodhilinux.com>
-License: GPL-3+
+License: GPL-3.0-or-later
  This program is free software: you can redistribute it and/or modify it under
  the terms of the GNU General Public License as published by the Free Software
  Foundation, either version 3 of the License, or (at your option) any later
