@@ -8,7 +8,7 @@ from pathlib import Path
 
 import apt
 
-from bodhi_update.backends import BackendMeta, UpdateBackend
+from bodhi_update.backends import BackendMeta, UpdateBackend, _API
 from bodhi_update.install_controller import build_upgrade_argv, get_helper_path
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
@@ -291,7 +291,7 @@ class AptBackend(UpdateBackend):
     meta = BackendMeta(
         backend_id = "apt",
         display_name = "Debian/Ubuntu Packages",
-        API = "1",
+        API = _API,
     )
 
     def is_available(self) -> bool:

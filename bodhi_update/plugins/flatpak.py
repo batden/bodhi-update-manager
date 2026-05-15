@@ -3,7 +3,7 @@
 import shutil
 import subprocess
 
-from bodhi_update.backends import BackendMeta, UpdateBackend
+from bodhi_update.backends import BackendMeta, UpdateBackend, _API
 from bodhi_update.models import UpdateItem
 
 # `flatpak remote-ls --updates --columns=application,branch,origin` outputs
@@ -18,7 +18,7 @@ class FlatpakBackend(UpdateBackend):
     meta = BackendMeta(
         backend_id = "flatpak",
         display_name = "Flatpak Packages",
-        API = "1",
+        API = _API,
         filter_group = "flatpak",
         filter_label = "FlatPak",
         filter_sort_order = 200,

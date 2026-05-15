@@ -3,7 +3,7 @@
 import shutil
 import subprocess
 
-from bodhi_update.backends import BackendMeta, UpdateBackend
+from bodhi_update.backends import BackendMeta, UpdateBackend, _API
 from bodhi_update.models import UpdateItem
 
 
@@ -13,7 +13,7 @@ class SnapBackend(UpdateBackend):
     meta = BackendMeta(
         backend_id = "snap",
         display_name = "Snap Packages",
-        API = "1",
+        API = _API,
         filter_group = "snap",
         filter_label = "Snap",
         filter_sort_order = 200,
