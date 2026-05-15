@@ -175,7 +175,7 @@ class UpdateManagerWindow(Gtk.Window):
                 #self.show_all()
                 self.install_details_revealer.set_reveal_child(False)
                 self.reboot_info_bar.hide()
-                self.set_updates_loading(True)
+                self.set_updates_loading(True, _("Loading cached package information..."))
                 threading.Thread(
                     target=self._load_cached_updates_on_startup,
                     daemon=True,
@@ -407,12 +407,21 @@ class UpdateManagerWindow(Gtk.Window):
         scroller.add(self.tree)
 
         # Loading page: spinner only, centred. Status bar carries the text.
-        loading_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        loading_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         loading_box.set_halign(Gtk.Align.CENTER)
         loading_box.set_valign(Gtk.Align.CENTER)
+
         self._loading_spinner = Gtk.Spinner()
         self._loading_spinner.set_size_request(32, 32)
         loading_box.pack_start(self._loading_spinner, False, False, 0)
+
+        self._loading_label = Gtk.Label()
+        self._loading_label.set_markup(
+            f"<b>{GLib.markup_escape_text(_('Loading package information...'))}</b>"
+        )
+        self._loading_label.set_justify(Gtk.Justification.CENTER)
+        self._loading_label.set_halign(Gtk.Align.CENTER)
+        loading_box.pack_start(self._loading_label, False, False, 0)
 
         # Nested stack: "loading" vs "list".
         self.updates_stack = Gtk.Stack()
@@ -718,13 +727,23 @@ class UpdateManagerWindow(Gtk.Window):
             self.clear_menu_item.set_sensitive(sensitive)
             self.show_desc_menu_item.set_sensitive(sensitive)
 
-    def set_updates_loading(self, loading: bool) -> None:
+    def set_updates_loading(
+        self,
+        loading: bool,
+        message: str | None = None,
+    ) -> None:
         """Switch the updates view between the loading and list pages."""
         self._updates_loading = loading
         if loading:
+            if message is None:
+                message = _("Loading package information...")
+
+            self._loading_label.set_markup(
+                f"<b>{GLib.markup_escape_text(message)}</b>"
+            )
             self.updates_stack.set_visible_child_name("loading")
             self._loading_spinner.start()
-            self.set_status(_("Loading updates..."))
+            self.set_status(message)
         else:
             self._loading_spinner.stop()
             self.updates_stack.set_visible_child_name("list")
@@ -1232,7 +1251,7 @@ class UpdateManagerWindow(Gtk.Window):
 
         self.stack.set_visible_child_name("updates")
         self._update_action_sensitivity()
-        self.set_updates_loading(True)
+        self.set_updates_loading(True, _("Loading cached package information..."))
         # Use the cached (non-privileged) path — on_check_updates would prompt
         # for pkexec auth, which is wrong after a simple back-navigation.
         threading.Thread(target=self._load_cached_updates_on_startup,
