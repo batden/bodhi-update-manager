@@ -53,12 +53,17 @@ https://github.com/flux-abyss/bodhi-update-manager"""
         "credits": _(
             """Credits
 
-Lead Developer:
+Developers:
     Joseph “flux.abyss” Wiley
-
-Contributors:
     Robert “ylee” Wiley
-    Diego “diekrz2” K."""
+    Diego “diekrz2” K.
+
+Translation:
+    Hugo Carvalho
+    Alejandro Díaz
+    Diego “diekrz2” K.
+    Indraneel Rajeevan
+    Štefan Uram"""
         ),
         "license": _(
             """Copyright © 2026 Joseph “flux.abyss” Wiley
