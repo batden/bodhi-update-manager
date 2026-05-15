@@ -16,8 +16,6 @@ from typing import TYPE_CHECKING
 import gi
 
 from bodhi_update.backends import get_registry, initialize_registry
-from bodhi_update.models import CONSTRAINT_BLOCKED, CONSTRAINT_HELD
-from bodhi_update.utils import get_pkg_severity
 
 gi.require_version("GdkPixbuf", "2.0")
 gi.require_version("Gtk", "3.0")
@@ -227,7 +225,7 @@ class TrayIcon:
             self._poll_running = False
 
     def _poll_worker(self) -> None:
-        """Read cached update state from backends without refreshing package lists."""
+        """Read lightweight cached update summaries from backends."""
         log.debug("Background poll started")
 
         try:
@@ -239,44 +237,27 @@ class TrayIcon:
 
         count = 0
         severity = "low"
-        registry = get_registry()
 
-        for backend in registry.get_all_backends():
+        for backend in get_registry().get_all_backends():
             backend_id = getattr(backend, "backend_id",
                                  backend.__class__.__name__)
 
             try:
-                log.debug("Polling backend: %s", backend_id)
-                updates, _ = backend.get_updates()
+                log.debug("Polling backend summary: %s", backend_id)
+                summary = backend.get_update_summary()
 
-                backend_count = 0
-                for update in updates:
-                    if getattr(update, "constraint", None) in (
-                            CONSTRAINT_HELD,
-                            CONSTRAINT_BLOCKED,
-                    ):
-                        continue
+                count += summary.count
 
-                    count += 1
-                    backend_count += 1
-
-                    pkg_severity = get_pkg_severity(
-                        getattr(update, "name", "") or "",
-                        getattr(update, "category", "") or "",
-                        getattr(update, "backend", "") or "",
-                    )
-
-                    if pkg_severity == "high":
-                        severity = "high"
-                    elif pkg_severity == "medium" and severity != "high":
-                        severity = "medium"
+                if summary.severity == "high":
+                    severity = "high"
+                elif summary.severity == "medium" and severity != "high":
+                    severity = "medium"
 
                 log.debug(
-                    "Backend %s -> %d updates (total: %d, severity: %s)",
+                    "Backend %s summary: %d updates, severity=%s",
                     backend_id,
-                    backend_count,
-                    count,
-                    severity,
+                    summary.count,
+                    summary.severity,
                 )
 
             except _POLL_ERRORS:

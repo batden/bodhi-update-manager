@@ -24,3 +24,10 @@ class UpdateItem:
     category: str
     description: str = ""
     constraint: str = CONSTRAINT_NORMAL
+
+@dataclass(frozen=True)
+class UpdateSummary:
+    """Represent a lightweight update summary for tray/status polling."""
+
+    count: int = 0
+    severity: str = "low"

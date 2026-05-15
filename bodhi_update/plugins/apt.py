@@ -15,7 +15,9 @@ from bodhi_update.models import (
     CONSTRAINT_HELD,
     CONSTRAINT_NORMAL,
     UpdateItem,
+    UpdateSummary,
 )
+from bodhi_update.update_summary import summarize_updates
 from bodhi_update.utils import find_privilege_tool
 
 # APT/dpkg lock files whose open FileDescriptions indicate a busy package system.
@@ -58,6 +60,27 @@ _NETWORK_ERROR_HINTS = (
     "some index files failed to download",
     "they have been ignored, or old ones used instead",
 )
+
+_APT_LISTS_DIR = Path("/var/lib/apt/lists")
+_DPKG_STATUS_PATH = Path("/var/lib/dpkg/status")
+
+
+def _apt_state_stamp() -> tuple[float, float]:
+    """Return a cheap stamp representing local APT/dpkg state."""
+    try:
+        lists_mtime = max(path.stat().st_mtime
+                          for path in _APT_LISTS_DIR.iterdir()
+                          if path.is_file())
+    except (OSError, ValueError):
+        lists_mtime = 0.0
+
+    try:
+        status_mtime = _DPKG_STATUS_PATH.stat().st_mtime
+    except OSError:
+        status_mtime = 0.0
+
+    return lists_mtime, status_mtime
+
 
 # ------------------------------------------------------------------ #
 # Internal /proc helpers                                               #
@@ -294,6 +317,10 @@ class AptBackend(UpdateBackend):
         API=_API,
     )
 
+    def __init__(self) -> None:
+        self._summary_stamp: tuple[float, float] | None = None
+        self._summary = UpdateSummary()
+
     def is_available(self) -> bool:
         # python-apt successfully imported at module level — APT is available.
         return True
@@ -466,3 +493,15 @@ class AptBackend(UpdateBackend):
                 total_bytes += item.size
         updates.sort(key=_sort_key)
         return updates, total_bytes
+
+    def get_update_summary(self) -> UpdateSummary:
+        """Return a cached lightweight update summary for tray polling."""
+        stamp = _apt_state_stamp()
+
+        if stamp == self._summary_stamp:
+            return self._summary
+
+        updates, _total_bytes = self.get_updates()
+        self._summary = summarize_updates(updates)
+        self._summary_stamp = stamp
+        return self._summary

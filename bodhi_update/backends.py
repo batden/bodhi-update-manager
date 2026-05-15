@@ -11,7 +11,8 @@ from importlib import import_module
 from importlib.metadata import entry_points
 from pathlib import Path
 
-from bodhi_update.models import UpdateItem
+from bodhi_update.models import UpdateItem, UpdateSummary
+from bodhi_update.update_summary import summarize_updates
 
 APP_NAME = "bodhi-update-manager"
 log = logging.getLogger(APP_NAME)
@@ -59,39 +60,31 @@ class UpdateBackend(ABC):
         meta = getattr(cls, "meta", None)
         if not isinstance(meta, BackendMeta):
             raise TypeError(
-                f"{cls.__name__} must define meta as a BackendMeta instance"
-            )
+                f"{cls.__name__} must define meta as a BackendMeta instance")
 
         if not isinstance(meta.backend_id, str) or not meta.backend_id:
             raise TypeError(
-                f"{cls.__name__} must define a non-empty meta.backend_id"
-            )
+                f"{cls.__name__} must define a non-empty meta.backend_id")
 
         if not isinstance(meta.display_name, str) or not meta.display_name:
             raise TypeError(
-                f"{cls.__name__} must define a non-empty meta.display_name"
-            )
+                f"{cls.__name__} must define a non-empty meta.display_name")
 
         if not isinstance(meta.API, str) or not meta.API:
-            raise TypeError(
-                f"{cls.__name__} must define a non-empty meta.API"
-            )
+            raise TypeError(f"{cls.__name__} must define a non-empty meta.API")
 
         if meta.filter_group is None and meta.filter_label is not None:
             raise TypeError(
-                f"{cls.__name__} defines filter_label without filter_group"
-            )
+                f"{cls.__name__} defines filter_label without filter_group")
 
         if meta.filter_group is not None:
             if not isinstance(meta.filter_group, str) or not meta.filter_group:
                 raise TypeError(
-                    f"{cls.__name__} must define a non-empty meta.filter_group"
-                )
+                    f"{cls.__name__} must define a non-empty meta.filter_group")
             if not isinstance(meta.filter_label, str) or not meta.filter_label:
                 raise TypeError(
                     f"{cls.__name__} must define meta.filter_label when "
-                    "meta.filter_group is set"
-                )
+                    "meta.filter_group is set")
 
     @property
     def backend_id(self) -> str:
@@ -149,6 +142,15 @@ class UpdateBackend(ABC):
         Return (updates_list, total_download_bytes).
         """
         return [], 0
+
+    def get_update_summary(self) -> UpdateSummary:
+        """Return a lightweight update summary for tray/background polling.
+
+        Backends may override this to avoid expensive full update discovery.
+        """
+
+        updates, _total_bytes = self.get_updates()
+        return summarize_updates(updates)
 
     @abstractmethod
     def build_install_command(
