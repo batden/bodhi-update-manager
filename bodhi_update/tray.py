@@ -191,27 +191,28 @@ class TrayIcon:
     # Background update-count polling
     # ------------------------------------------------------------------
 
-    def _on_poll_timer(self) -> bool:
-        """Periodic timer callback for background polling."""
-
-        if not _read_pref("show_notifications"):
-            log.debug("Background polling disabled")
-            return True
-
+    def refresh_now(self) -> None:
+        """Start an immediate tray update-count poll if one is not already running."""
         if self._poll_running:
-            log.debug("Skipping poll: worker already running")
-            return True
+            log.debug("Skipping immediate tray refresh: worker already running")
+            return
 
-        log.debug("Starting background poll thread")
+        log.debug("Starting immediate tray refresh")
 
         self._poll_running = True
-
         threading.Thread(
             target=self._poll_worker_wrapper,
             daemon=True,
             name="bodhi-update-poller",
         ).start()
 
+    def _on_poll_timer(self) -> bool:
+        """Periodic timer callback for background polling."""
+        if not _read_pref("show_notifications"):
+            log.debug("Background polling disabled")
+            return True
+
+        self.refresh_now()
         return True
 
     def _poll_worker_wrapper(self):

@@ -1076,6 +1076,11 @@ class UpdateManagerWindow(Gtk.Window):
 
     def _finish_install_success(self) -> None:
         self.install_controller.finish_install_success()
+
+        app = self.get_application()
+        if app is not None and hasattr(app, "refresh_tray_count"):
+            app.refresh_tray_count()
+
         if reboot_required():
             self.reboot_info_bar.show()
 
@@ -1331,6 +1336,11 @@ class UpdateManagerApplication(Gtk.Application):
         """Forward an update count to the tray badge (no-op if no tray)."""
         if self._tray is not None:
             self._tray.set_update_count(count, severity)
+
+    def refresh_tray_count(self) -> None:
+        """Ask the tray icon to immediately refresh its cached update count."""
+        if self._tray is not None:
+            self._tray.refresh_now()
 
     def quit_from_tray(self) -> None:
         """Quit the application, releasing hold() if in tray-only mode."""
