@@ -67,6 +67,14 @@ def test_determine_category_system() -> None:
 
     assert category == "system"
 
+def test_security_origin_marks_package_security() -> None:
+    assert _determine_category("nano", "jammy-security") == "security"
+
+def test_determine_category_internel_security_policy() -> None:
+    """Firefox package should be categorized as security update."""
+    category = _determine_category("firefox", "jammy-updates")
+
+    assert category == "security"
 
 def test_stderr_mentions_lock_detects_common_lock_errors() -> None:
     """APT/dpkg lock messages should be detected."""
@@ -210,3 +218,12 @@ def test_classify_constraint_held_takes_priority_over_blocked() -> None:
 
     assert constraint == CONSTRAINT_HELD
     assert description == "GNU Bourne Again SHell"
+
+def test_user_security_policy_marks_package_security(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "bodhi_update.plugins.apt.is_user_security_package",
+        lambda name: name == "my-browser",
+    )
+
+    assert _determine_category("my-browser", "jammy") == "security"
+    assert _determine_category("nano", "jammy") == "system"
