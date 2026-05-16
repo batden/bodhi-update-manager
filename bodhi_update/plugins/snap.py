@@ -8,6 +8,7 @@ import time
 
 from bodhi_update.backends import BackendMeta, UpdateBackend, _API
 from bodhi_update.models import UpdateItem, UpdateSummary
+from bodhi_update.security_policy import is_user_security_package
 
 
 class SnapBackend(UpdateBackend):
@@ -211,6 +212,8 @@ class SnapBackend(UpdateBackend):
             candidate_version = row[1]
             installed_version = installed.get(name, "-")
 
+            category = "security" if is_user_security_package(name) else "snap"
+
             updates.append(
                 UpdateItem(
                     name=name,
@@ -219,9 +222,9 @@ class SnapBackend(UpdateBackend):
                     size=0,
                     origin="snap",
                     backend="snap",
-                    category="snap",
+                    category=category,
                     description="Snap package",
-                ))
+               ))
 
         return updates, 0
 
