@@ -281,9 +281,15 @@ class InstallController:
         log.debug("Command: %s", argv)
 
         self.start_install_progress(title)
-        self._active_privilege_tool = find_privilege_tool()
 
-        if self._active_privilege_tool == "pkexec":
+        helper_path = get_helper_path()
+        uses_bodhi_helper = (
+            len(argv) >= 2
+            and argv[0] == find_privilege_tool()
+            and argv[1] == helper_path
+        )
+
+        if uses_bodhi_helper and argv[0] == "pkexec":
             sentinel = (f"/tmp/bodup-auth-{os.getpid()}-"
                         f"{random.randint(0, 0xFFFFFF):06x}.ok")
             self._auth_sentinel_path = sentinel
@@ -291,9 +297,13 @@ class InstallController:
             self.spawn_install_command(guarded_argv)
             self._auth_poll_source_id = GLib.timeout_add(
                 100, self.poll_auth_sentinel)
-        else:
-            self.spawn_install_command(argv)
+            return
+
+        self.spawn_install_command(argv)
+
+        if argv and os.path.basename(argv[0]) in {"sudo", "doas"}:
             self.handle_terminal_auth_fallback()
+        else:
             GLib.idle_add(self.mark_install_running)
 
     def launch_deb_install(self, deb_path: str, title: str) -> None:
