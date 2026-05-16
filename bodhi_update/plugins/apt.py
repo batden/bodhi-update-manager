@@ -17,6 +17,7 @@ from bodhi_update.models import (
     UpdateItem,
     UpdateSummary,
 )
+from bodhi_update.security_policy import is_user_security_package
 from bodhi_update.update_summary import summarize_updates
 from bodhi_update.utils import find_privilege_tool
 
@@ -149,6 +150,8 @@ def _is_kernel_update(pkg_name: str) -> bool:
 def _determine_category(pkg_name: str, origin: str) -> str:
     """Return 'security', 'kernel', or 'system' according to priority."""
     if _is_security_update(origin):
+        return "security"
+    if is_user_security_package(pkg_name):
         return "security"
     if _is_kernel_update(pkg_name):
         return "kernel"
