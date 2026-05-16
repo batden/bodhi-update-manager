@@ -1,10 +1,13 @@
 """Snap-backed update discovery for the Bodhi Update Manager."""
 
+from __future__ import annotations
+
 import shutil
 import subprocess
+import time
 
 from bodhi_update.backends import BackendMeta, UpdateBackend, _API
-from bodhi_update.models import UpdateItem
+from bodhi_update.models import UpdateItem, UpdateSummary
 
 
 class SnapBackend(UpdateBackend):
@@ -20,6 +23,16 @@ class SnapBackend(UpdateBackend):
         show_in_preferences=True,
         icon_name="package-x-generic-symbolic",
     )
+
+    # Fallback cache TTL used when `snap refresh --time` is unavailable or
+    # unparsable. Snapd normally refreshes on its own schedule, so there is no
+    # need to run the heavier `snap refresh --list` on every tray poll.
+    _SUMMARY_FALLBACK_TTL = 60 * 60
+
+    def __init__(self) -> None:
+        self._summary = UpdateSummary()
+        self._last_refresh_stamp: str | None = None
+        self._last_summary_check = 0.0
 
     def is_available(self) -> bool:
         """Return True only if snap exists and snapd is responsive.
@@ -73,6 +86,34 @@ class SnapBackend(UpdateBackend):
                 rows.append(parts)
         return rows
 
+    @staticmethod
+    def _refresh_time_stamp() -> str | None:
+        """Return snapd's last refresh timestamp, or None if unavailable.
+
+        `snap refresh --time` is used as a cheap signal.  If the reported
+        "last:" value has not changed, the cached summary is still valid.
+        """
+        try:
+            result = subprocess.run(
+                ["snap", "refresh", "--time"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=8,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return None
+
+        if result.returncode != 0 or not result.stdout:
+            return None
+
+        for line in result.stdout.splitlines():
+            if line.lower().startswith("last:"):
+                return line.partition(":")[2].strip()
+
+        return None
+
     def _installed_versions(self) -> dict[str, str]:
         """Return {snap_name: installed_version} from `snap list`."""
         try:
@@ -95,17 +136,8 @@ class SnapBackend(UpdateBackend):
                 installed[row[0]] = row[1]
         return installed
 
-    # ------------------------------------------------------------------ #
-    # Backend interface                                                    #
-    # ------------------------------------------------------------------ #
-
-    def get_updates(self) -> tuple[list[UpdateItem], int]:
-        """Return snaps that have an available refresh.
-
-        `snap refresh --list` reports only snaps with a pending update; it does
-        NOT list all installed snaps, so no filtering is needed.
-        Installed versions are looked up separately from `snap list`.
-        """
+    def _query_pending_refreshes(self) -> str:
+        """Return stdout from `snap refresh --list`, or an empty string."""
         try:
             result = subprocess.run(
                 ["snap", "refresh", "--list"],
@@ -116,11 +148,55 @@ class SnapBackend(UpdateBackend):
                 check=False,
             )
         except (OSError, subprocess.TimeoutExpired):
-            return [], 0
+            return ""
 
-        # returncode 0 → updates present; anything else (e.g. 1 for "no updates")
-        # may still produce empty but valid output.  We only need the rows.
-        if not result.stdout or not result.stdout.strip():
+        return result.stdout or ""
+
+    # ------------------------------------------------------------------ #
+    # Backend interface                                                    #
+    # ------------------------------------------------------------------ #
+
+    def get_update_summary(self) -> UpdateSummary:
+        """Return a cached lightweight summary of pending Snap refreshes.
+
+        Tray polling only needs count/severity.  Avoid the heavier get_updates()
+        path because it also calls `snap list` and builds UpdateItem objects.
+
+        The summary is refreshed when snapd's reported last refresh time changes.
+        If that timestamp cannot be read, fall back to a time-based cache.
+        """
+        now = time.monotonic()
+        stamp = self._refresh_time_stamp()
+
+        if stamp is not None and stamp == self._last_refresh_stamp:
+            return self._summary
+
+        if stamp is None and (
+                now - self._last_summary_check < self._SUMMARY_FALLBACK_TTL):
+            return self._summary
+
+        stdout = self._query_pending_refreshes()
+        if stdout.strip():
+            self._summary = UpdateSummary(
+                count=len(self._parse_snap_table(stdout)),
+                severity="low",
+            )
+        else:
+            self._summary = UpdateSummary()
+
+        self._last_refresh_stamp = stamp
+        self._last_summary_check = now
+        return self._summary
+
+    def get_updates(self) -> tuple[list[UpdateItem], int]:
+        """Return snaps that have an available refresh.
+
+        `snap refresh --list` reports only snaps with a pending update; it does
+        NOT list all installed snaps, so no filtering is needed.
+        Installed versions are looked up separately from `snap list`.
+        """
+        stdout = self._query_pending_refreshes()
+        if not stdout.strip():
             return [], 0
 
         # Fetch installed versions for honest population of installed_version.
@@ -128,7 +204,7 @@ class SnapBackend(UpdateBackend):
 
         updates: list[UpdateItem] = []
         # snap refresh --list columns: Name  Version  Rev  Size  Publisher  Notes
-        for row in self._parse_snap_table(result.stdout):
+        for row in self._parse_snap_table(stdout):
             if len(row) < 2:
                 continue
             name = row[0]
@@ -151,6 +227,12 @@ class SnapBackend(UpdateBackend):
 
     def build_install_command(self,
                               packages: list[str] | None = None) -> list[str]:
+        """Return argv to refresh selected Snap packages.
+
+        If *packages* is None or empty, discover all pending Snap refreshes and
+        return a command for those snaps.  The returned argv is passed directly to
+        VTE spawn_async; no shell quoting or wrapping is performed.
+        """
         if not packages:
             discovered, _ = self.get_updates()
             packages = [item.name for item in discovered]
