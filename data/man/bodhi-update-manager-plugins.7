@@ -147,7 +147,7 @@ from bodhi_update.backends import UpdateBackend, BackendMeta
 
 class ExampleBackend(UpdateBackend):
     meta = BackendMeta(
-        backend_id="example",
+        backend_id="mybackend",
         display_name="Example Backend",
         API="1",
     )
@@ -158,6 +158,34 @@ class ExampleBackend(UpdateBackend):
     def install_updates(self, updates):
         return True
 .fi
+
+.SH SECURITY CLASSIFICATION
+Backends may classify an update as security-sensitive by setting the
+.B category
+field of the returned
+.B UpdateItem
+to
+.BR security .
+
+Security classification affects display and prioritization only. It does not
+change the package source, verify that an update fixes a known vulnerability,
+or alter how packages are installed.
+
+The update manager provides a user security policy helper for package-name
+based classification. Backends whose update names are meaningful to users may
+use this helper to honor the user's security package policy.
+
+For example:
+
+.EX
+from bodhi_update.security_policy import is_user_security_package
+
+category = "security" if is_user_security_package(name) else "mybackend"
+.EE
+
+Backends are not required to use this helper. A backend may instead rely on
+its own metadata, repository information, advisory data, or package manager
+semantics when assigning categories.
 
 .SH FILES
 Plugins are typically installed as Python packages and discovered via entry

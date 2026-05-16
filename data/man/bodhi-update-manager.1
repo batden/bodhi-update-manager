@@ -53,7 +53,9 @@ starts minimized to the system tray.
 
 .TP
 .BR \-s ", " \-\-security
-Show only security-related updates.
+Show only security-related updates. This includes updates from distribution
+security repositories and packages matched by an optional user security package
+policy file.
 
 .TP
 .BR \-k ", " \-\-kernel
@@ -161,9 +163,48 @@ Timer status may be inspected with:
 .B systemctl --system status bodhi-update-manager-refresh.timer
 .fi
 
+.SH SECURITY PACKAGE POLICY
+Some packages may be important to treat as security-sensitive even when
+they are not provided by the distribution security repository. For example,
+web browsers, mail clients, SSH tools, and network-facing applications may
+receive important security fixes through normal update channels.
+
+The update manager includes a small built-in list of common security-sensitive
+package patterns. Users may extend that list with a security policy file.
+
+The user security policy file allows additional package names or patterns to
+be shown as Security updates by the update manager.
+
+The file is line based. Blank lines and lines beginning with
+.B #
+are ignored. Each non-comment line is either an exact package name or a
+shell-style glob pattern.
+
+Example:
+
+.EX
+# Additional packages to treat as security-sensitive
+my-browser
+company-vpn-client
+custom-webkit*
+openssh*
+.EE
+
+This policy only affects how updates are classified and displayed. It does
+not change the package source, does not verify that an update fixes a known
+vulnerability, and does not alter how packages are installed.
+
 .SH FILES
 .TP
 .I $XDG_CONFIG_HOME/bodhi-update-manager/prefs.json
+
+.TP
+.I $XDG_CONFIG_HOME/bodhi-update-manager/security-packages.conf
+User-defined security package policy. Package names or shell-style glob
+patterns listed in this file are added to the built-in security-sensitive
+package patterns. Blank lines and comments beginning with
+.B #
+are ignored.
 
 .TP
 .I /usr/lib/bodhi-update-manager/
