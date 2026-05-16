@@ -18,7 +18,7 @@ class SnapBackend(UpdateBackend):
         filter_label="Snap",
         filter_sort_order=200,
         show_in_preferences=True,
-        icon_name="package-x-generic-symbolic"
+        icon_name="package-x-generic-symbolic",
     )
 
     def is_available(self) -> bool:
@@ -48,10 +48,12 @@ class SnapBackend(UpdateBackend):
             return False
 
     def check_busy(self) -> tuple[bool, str]:
+        """Return False because Snap locking is handled by snapd."""
         return False, ""
 
     def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
-        # Discovery is done live in get_updates(); no separate cache step.
+        """No-op refresh; Snap update discovery is queried live."""
+        del sentinel_path
         return True, ""
 
     # ------------------------------------------------------------------ #
