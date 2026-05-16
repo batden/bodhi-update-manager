@@ -5,6 +5,7 @@ import subprocess
 
 from bodhi_update.backends import BackendMeta, UpdateBackend, _API
 from bodhi_update.models import UpdateItem
+from bodhi_update.security_policy import is_user_security_package
 
 # `flatpak remote-ls --updates --columns=application,branch,origin` outputs
 # tab-separated rows.  We query each scope explicitly so that both system-wide
@@ -162,6 +163,8 @@ class FlatpakBackend(UpdateBackend):
             # remote-ls does not expose the exact new version string;
             # use the tracking branch (e.g. "stable") as the descriptor.
             candidate_version = branch or "update available"
+            category = "security" if is_user_security_package(app_id) else "flatpak"
+
             updates.append(
                 UpdateItem(
                     name=app_id,
@@ -170,7 +173,7 @@ class FlatpakBackend(UpdateBackend):
                     size=0,
                     origin=origin or "flatpak",
                     backend="flatpak",
-                    category="flatpak",
+                    category=category,
                     description="Flatpak package",
                 ))
 
