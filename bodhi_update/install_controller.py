@@ -27,10 +27,10 @@ textdomain(APP_NAME)
 # ---------------------------------------------------------------------------
 
 # Production path registered in the polkit policy file.
-_INSTALLED_HELPER = "/usr/libexec/bodhi-update-manager-root"
+_INSTALLED_HELPER = "/usr/libexec/um-actions-apt"
 
 # Development fallback: the source-tree helper at data/libexec/bodhi-update-manager-root
-_DEV_HELPER = Path(__file__).resolve().parents[1] / "data/libexec/bodhi-update-manager-root"
+_DEV_HELPER = Path(__file__).resolve().parents[1] / "data/libexec/um-actions-apt"
 
 
 def get_helper_path() -> str:

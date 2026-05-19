@@ -25,10 +25,10 @@ msgfmt \
 # Generate translated policykit file from policy.in file
 msgfmt \
   --xml \
-  --template="data/polkit/org.bodhi.updatemanager.policy.in" \
+  --template="data/polkit/org.bodhi.updatemanager.apt.policy.in" \
   -d po \
-  -o "data/polkit/org.bodhi.updatemanager.policy"
+  -o "data/polkit/org.bodhi.updatemanager.apt,policy"
 
 intltool-merge -x po \
-	"data/polkit/org.bodhi.updatemanager.policy.in" \
-	"data/polkit/org.bodhi.updatemanager.policy"
+	"data/polkit/org.bodhi.updatemanager.apt.policy.in" \
+	"data/polkit/org.bodhi.updatemanager.apt.policy"

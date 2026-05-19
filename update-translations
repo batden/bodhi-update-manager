@@ -18,7 +18,7 @@ FILE_LIST="$TRANSLATION_DIR/POTFILES.in"
 APP_DIR="data/applications"
 DESKTOP_TEMPLATE="$APP_DIR/bodhi-update-manager.in"
 XDG_TEMPLATE="$APP_DIR/bodhi-update-manager-tray.in"
-POLICY_TEMPLATE="data/polkit/org.bodhi.updatemanager.policy.in"
+APT_POLICY_TEMPLATE="data/polkit/org.bodhi.updatemanager.apt.policy.in"
 DESKTOP_OUTPUT="$APP_DIR/bodhi-update-manager.desktop"
 XDG_OUTPUT="$APP_DIR/bodhi-update-manager-tray.desktop"
 POLICY_OUTPUT="data/polkit/org.bodhi.updatemanager.policy"
@@ -53,7 +53,7 @@ xgettext \
   "$XDG_TEMPLATE"
 
 echo -e "Extracting PolicyKit strings\n"
-intltool-extract --type=gettext/xml "$POLICY_TEMPLATE"
+intltool-extract --type=gettext/xml "$APT_POLICY_TEMPLATE"
 
 xgettext \
   --join-existing \
@@ -64,9 +64,9 @@ xgettext \
   --package-version="$VERSION" \
   --msgid-bugs-address="$ISSUES" \
   -o "$POT_FILE" \
-  "${POLICY_TEMPLATE}.h"
+  "${APT_POLICY_TEMPLATE}.h"
 
-rm -f "${POLICY_TEMPLATE}.h"
+rm -f "${APT_POLICY_TEMPLATE}.h"
 
 YEAR=$(date +%Y)
 sed -i "s/^# Copyright (C).*/# Copyright (C) $YEAR Bodhi Linux Team/" "$POT_FILE"
@@ -112,13 +112,13 @@ msgfmt \
 
 msgfmt \
   --xml \
-  --template="$POLICY_TEMPLATE" \
+  --template="$APT_POLICY_TEMPLATE" \
   -d "$TRANSLATION_DIR" \
   -o "$POLICY_OUTPUT"
 
 echo "Generating translated PolicyKit file"
 intltool-merge -x "$TRANSLATION_DIR" \
-    "$POLICY_TEMPLATE" \
+    "$APT_POLICY_TEMPLATE" \
     "$POLICY_OUTPUT" > /dev/null 2>&1
 
 # Remove backup po files
