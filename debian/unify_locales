@@ -27,7 +27,7 @@ msgfmt \
   --xml \
   --template="data/polkit/org.bodhi.updatemanager.apt.policy.in" \
   -d po \
-  -o "data/polkit/org.bodhi.updatemanager.apt,policy"
+  -o "data/polkit/org.bodhi.updatemanager.apt.policy"
 
 intltool-merge -x po \
 	"data/polkit/org.bodhi.updatemanager.apt.policy.in" \
