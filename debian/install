@@ -2,8 +2,8 @@ data/applications/bodhi-update-manager.desktop usr/share/applications/
 data/applications/bodhi-update-manager-tray.desktop etc/xdg/autostart
 data/bin/bodhi-update-manager usr/bin/
 data/icons/* usr/share/icons/hicolor/256x256/apps/
-data/libexec/org.bodhi.updatemanager.apt.policy usr/libexec/
-data/libexec/org.bodhi.updatemanager.snap.policy usr/libexec/
-data/polkit/* usr/share/polkit-1/actions/
+data/libexec/* usr/libexec/
+data/polkit/org.bodhi.updatemanager.apt.policy usr/share/polkit-1/actions/
+data/polkit/org.bodhi.updatemanager.snap.policy usr/share/polkit-1/actions/
 data/systemd/* usr/lib/systemd/system/
 bodhi_update/* usr/lib/bodhi-update-manager/bodhi_update
