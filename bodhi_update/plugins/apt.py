@@ -328,6 +328,13 @@ class AptBackend(UpdateBackend):
         # python-apt successfully imported at module level — APT is available.
         return True
 
+    def supports_hold(self) -> bool:
+        return True
+
+    def build_hold_command(self, package: str, hold: bool) -> list[str]:
+        action = "hold" if hold else "unhold"
+        return ["pkexec", get_helper_path(), action, package]
+
     def build_install_command(self,
                               packages: list[str] | None = None) -> list[str]:
         """Return argv for privilege-escalated APT install/upgrade (passed to VTE, no shell)."""
