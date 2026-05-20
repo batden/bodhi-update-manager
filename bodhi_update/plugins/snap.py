@@ -10,6 +10,7 @@ from bodhi_update.backends import BackendMeta, UpdateBackend, _API
 from bodhi_update.models import UpdateItem, UpdateSummary
 from bodhi_update.security_policy import is_user_security_package
 
+_INSTALLED_HELPER = "/usr/libexec/um-actions-snap"
 
 class SnapBackend(UpdateBackend):
     """Update backend that queries installed Snap packages."""
@@ -70,6 +71,13 @@ class SnapBackend(UpdateBackend):
         del sentinel_path
         return True, ""
 
+    def supports_hold(self) -> bool:
+        return True
+
+    def build_hold_command(self, package: str, hold: bool) -> list[str]:
+        action = "hold" if hold else "unhold"
+        return ["pkexec", _INSTALLED_HELPER, action, package]
+    
     # ------------------------------------------------------------------ #
     # Internal helpers                                                     #
     # ------------------------------------------------------------------ #
