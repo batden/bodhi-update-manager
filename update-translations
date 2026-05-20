@@ -19,9 +19,11 @@ APP_DIR="data/applications"
 DESKTOP_TEMPLATE="$APP_DIR/bodhi-update-manager.in"
 XDG_TEMPLATE="$APP_DIR/bodhi-update-manager-tray.in"
 APT_POLICY_TEMPLATE="data/polkit/org.bodhi.updatemanager.apt.policy.in"
+SNP_POLICY_TEMPLATE="data/polkit/org.bodhi.updatemanager.snap.policy.in"
 DESKTOP_OUTPUT="$APP_DIR/bodhi-update-manager.desktop"
 XDG_OUTPUT="$APP_DIR/bodhi-update-manager-tray.desktop"
-POLICY_OUTPUT="data/polkit/org.bodhi.updatemanager.policy"
+POLICY_APT_OUTPUT="data/polkit/org.bodhi.updatemanager.apt.policy"
+POLICY_SNP_OUTPUT="data/polkit/org.bodhi.updatemanager.snap.policy"
 VERSION=$(PYTHONPATH=. python3 -c 'from bodhi_update._version import __version__; print(__version__)')
 ISSUES="https://github.com/flux-abyss/bodhi-update-manager/issues"
 
@@ -68,6 +70,21 @@ xgettext \
 
 rm -f "${APT_POLICY_TEMPLATE}.h"
 
+intltool-extract --type=gettext/xml "$SNP_POLICY_TEMPLATE"
+
+xgettext \
+  --join-existing \
+  --language=C \
+  --from-code=UTF-8 \
+  --keyword=N_ \
+  --package-name="bodhi-update-manager" \
+  --package-version="$VERSION" \
+  --msgid-bugs-address="$ISSUES" \
+  -o "$POT_FILE" \
+  "${SNP_POLICY_TEMPLATE}.h"
+
+rm -f "${SNP_POLICY_TEMPLATE}.h"
+
 YEAR=$(date +%Y)
 sed -i "s/^# Copyright (C).*/# Copyright (C) $YEAR Bodhi Linux Team/" "$POT_FILE"
 
@@ -110,16 +127,26 @@ msgfmt \
   -d "$TRANSLATION_DIR" \
   -o "$XDG_OUTPUT"
 
+echo "Generating translated PolicyKit files"
 msgfmt \
   --xml \
   --template="$APT_POLICY_TEMPLATE" \
   -d "$TRANSLATION_DIR" \
-  -o "$POLICY_OUTPUT"
+  -o "$POLICY_APT_OUTPUT"
 
-echo "Generating translated PolicyKit file"
 intltool-merge -x "$TRANSLATION_DIR" \
     "$APT_POLICY_TEMPLATE" \
-    "$POLICY_OUTPUT" > /dev/null 2>&1
+    "$POLICY_APT_OUTPUT" > /dev/null 2>&1
+
+msgfmt \
+  --xml \
+  --template="$SNP_POLICY_TEMPLATE" \
+  -d "$TRANSLATION_DIR" \
+  -o "$POLICY_SNP_OUTPUT"
+
+intltool-merge -x "$TRANSLATION_DIR" \
+    "$SNP_POLICY_TEMPLATE" \
+    "$POLICY_SNP_OUTPUT" > /dev/null 2>&1
 
 # Remove backup po files
 rm -f "$TRANSLATION_DIR"/*.po~ > /dev/null 2>&1

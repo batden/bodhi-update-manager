@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""Privileged Snap action helper for the Update Manager.
+
+Installed path: /usr/libexec/um-actions-snap
+
+Supported commands:
+  refresh <snap> [<snap>...]
+  refresh-all
+  hold <snap> [<snap>...]
+  unhold <snap> [<snap>...]
+
+No shell=True is used.
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import subprocess
+import sys
+
+_SNAP_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+
+_COMMANDS = {
+    "refresh": _cmd_refresh,
+    "refresh-all": _cmd_refresh_all,
+    "hold": _cmd_hold,
+    "unhold": _cmd_unhold,
+}
+
+
+def _snap_binary() -> str | None:
+    """Return the absolute path to snap, or None if unavailable."""
+    return shutil.which("snap")
+
+
+def _valid_snap_name(name: str) -> bool:
+    """Return True if *name* looks like a Snap package name."""
+    return bool(_SNAP_NAME_RE.fullmatch(name))
+
+
+def _validate_snap_names(names: list[str]) -> bool:
+    """Validate all Snap names, printing an error on failure."""
+    for name in names:
+        if not _valid_snap_name(name):
+            print(f"error: invalid snap name: {name!r}", file=sys.stderr)
+            return False
+    return True
+
+
+def _run_snap(args: list[str]) -> int:
+    """Run snap with *args* and return its exit code."""
+    snap = _snap_binary()
+    if snap is None:
+        print("error: snap command not found.", file=sys.stderr)
+        return 1
+
+    return subprocess.run([snap, *args], check=False).returncode
+
+
+def _require_names(command: str, names: list[str]) -> bool:
+    """Require at least one target snap and validate all names."""
+    if not names:
+        print(
+            f"error: '{command}' requires at least one snap name.",
+            file=sys.stderr,
+        )
+        return False
+    return _validate_snap_names(names)
+
+
+def _cmd_refresh(args: list[str]) -> int:
+    """Refresh selected snaps."""
+    if not _require_names("refresh", args):
+        return 1
+    return _run_snap(["refresh", *args])
+
+
+def _cmd_refresh_all(args: list[str]) -> int:
+    """Refresh all snaps."""
+    if args:
+        print(
+            f"error: 'refresh-all' takes no arguments, got: {args}",
+            file=sys.stderr,
+        )
+        return 1
+    return _run_snap(["refresh"])
+
+
+def _cmd_hold(args: list[str]) -> int:
+    """Hold selected snaps."""
+    if not _require_names("hold", args):
+        return 1
+    return _run_snap(["refresh", "--hold", *args])
+
+
+def _cmd_unhold(args: list[str]) -> int:
+    """Unhold selected snaps."""
+    if not _require_names("unhold", args):
+        return 1
+    return _run_snap(["refresh", "--unhold", *args])
+
+
+def main() -> int:
+    """Parse and dispatch the requested Snap action."""
+    if os.geteuid() != 0:
+        print(
+            "error: this helper must be run as root, normally via pkexec.",
+            file=sys.stderr,
+        )
+        return 1
+
+    if len(sys.argv) < 2:
+        allowed = "|".join(_COMMANDS)
+        print(
+            f"usage: {os.path.basename(sys.argv[0])} <{allowed}> [args...]",
+            file=sys.stderr,
+        )
+        return 1
+
+    command = sys.argv[1]
+    args = sys.argv[2:]
+
+    handler = _COMMANDS.get(command)
+    if handler is None:
+        print(
+            f"error: unknown command {command!r}. "
+            f"Allowed: {', '.join(sorted(_COMMANDS))}",
+            file=sys.stderr,
+        )
+        return 1
+
+    return handler(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

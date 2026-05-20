@@ -22,7 +22,7 @@ msgfmt \
   --keyword=Keywords \
   -d po \
   -o data/applications/bodhi-update-manager-tray.desktop
-# Generate translated policykit file from policy.in file
+# Generate translated policykit files from policy.in files
 msgfmt \
   --xml \
   --template="data/polkit/org.bodhi.updatemanager.apt.policy.in" \
@@ -32,3 +32,13 @@ msgfmt \
 intltool-merge -x po \
 	"data/polkit/org.bodhi.updatemanager.apt.policy.in" \
 	"data/polkit/org.bodhi.updatemanager.apt.policy"
+
+msgfmt \
+  --xml \
+  --template="data/polkit/org.bodhi.updatemanager.snap.policy.in" \
+  -d po \
+  -o "data/polkit/org.bodhi.updatemanager.snap.policy"
+
+intltool-merge -x po \
+	"data/polkit/org.bodhi.updatemanager.snap.policy.in" \
+	"data/polkit/org.bodhi.updatemanager.snap.policy"
