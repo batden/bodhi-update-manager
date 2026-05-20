@@ -8,7 +8,7 @@
   <vendor>Bodhi Linux</vendor>
   <vendor_url>https://www.bodhilinux.com</vendor_url>
 
-  <action id="org.bodhi.updatemanager.run">
+  <action id="org.bodhi.updatemanager.apt-run">
     <_description>Run the Update Manager privileged helper</_description>
     <_message>Authentication is required to install or update packages.</_message>
     <icon_name>system-software-update</icon_name>
@@ -23,7 +23,7 @@
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
 
-    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/bodhi-update-manager-root</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/um-actions-apt</annotate>
     <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
   </action>
 
