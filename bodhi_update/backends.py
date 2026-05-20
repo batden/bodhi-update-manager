@@ -164,6 +164,12 @@ class UpdateBackend(ABC):
         spawn_async — no shell layer is used.
         """
 
+    def supports_hold(self) -> bool:
+        return False
+
+    def build_hold_command(self, package: str, hold: bool) -> list[str]:
+        raise NotImplementedError
+
 
 class BackendRegistry:
     """Singleton registry holding all instantiated update backends."""
