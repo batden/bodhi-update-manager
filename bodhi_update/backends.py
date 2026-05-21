@@ -165,11 +165,17 @@ class UpdateBackend(ABC):
         """
 
     def supports_hold(self) -> bool:
+        """Return True if this backend supports package hold/unhold actions."""
         return False
 
     def build_hold_command(self, package: str, hold: bool) -> list[str]:
-        raise NotImplementedError
+        """Return argv for holding or unholding one package.
 
+        Backends that return True from supports_hold() must override this.
+        """
+        raise NotImplementedError(
+                    f"{self.display_name} does not support hold/unhold actions."
+                )
 
 class BackendRegistry:
     """Singleton registry holding all instantiated update backends."""
