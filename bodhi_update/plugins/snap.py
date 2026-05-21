@@ -7,7 +7,12 @@ import subprocess
 import time
 
 from bodhi_update.backends import BackendMeta, UpdateBackend, _API
-from bodhi_update.models import UpdateItem, UpdateSummary
+from bodhi_update.models import (
+    CONSTRAINT_HELD,
+    CONSTRAINT_NORMAL,
+    UpdateItem,
+    UpdateSummary,
+)
 from bodhi_update.security_policy import is_user_security_package
 
 _INSTALLED_HELPER = "/usr/libexec/um-actions-snap"
@@ -123,8 +128,18 @@ class SnapBackend(UpdateBackend):
 
         return None
 
-    def _installed_versions(self) -> dict[str, str]:
-        """Return {snap_name: installed_version} from `snap list`."""
+    def _installed_info(self) -> dict[str, tuple[str, bool]]:
+        """Return {snap_name: (installed_version, is_held)} from `snap list`.
+
+        snap list columns:
+          Name  Version  Rev  Tracking  Publisher  Notes
+
+        The Notes column can contain values such as:
+          -
+          classic
+          held
+          classic,held
+        """
         try:
             result = subprocess.run(
                 ["snap", "list"],
@@ -136,13 +151,29 @@ class SnapBackend(UpdateBackend):
             )
         except (OSError, subprocess.TimeoutExpired):
             return {}
+
         if result.returncode != 0 or not result.stdout:
             return {}
-        installed: dict[str, str] = {}
-        # snap list columns: Name  Version  Rev  Tracking  Publisher  Notes
+
+        installed: dict[str, tuple[str, bool]] = {}
+
         for row in self._parse_snap_table(result.stdout):
-            if len(row) >= 2:
-                installed[row[0]] = row[1]
+            if len(row) < 2:
+                continue
+
+            name = row[0]
+            version = row[1]
+            notes = row[5] if len(row) >= 6 else ""
+
+            note_tokens = {
+                token.strip().lower()
+                for token in notes.split(",")
+                if token.strip()
+            }
+            is_held = "held" in note_tokens
+
+            installed[name] = (version, is_held)
+
         return installed
 
     def _query_pending_refreshes(self) -> str:
@@ -208,8 +239,7 @@ class SnapBackend(UpdateBackend):
         if not stdout.strip():
             return [], 0
 
-        # Fetch installed versions for honest population of installed_version.
-        installed = self._installed_versions()
+        installed = self._installed_info()
 
         updates: list[UpdateItem] = []
         # snap refresh --list columns: Name  Version  Rev  Size  Publisher  Notes
@@ -218,9 +248,11 @@ class SnapBackend(UpdateBackend):
                 continue
             name = row[0]
             candidate_version = row[1]
-            installed_version = installed.get(name, "-")
+            installed_version, is_held = installed.get(name, ("-", False))
+            constraint = CONSTRAINT_HELD if is_held else CONSTRAINT_NORMAL
 
             category = "security" if is_user_security_package(name) else "snap"
+            description = "Held Snap package" if is_held else "Snap package"
 
             updates.append(
                 UpdateItem(
@@ -231,8 +263,10 @@ class SnapBackend(UpdateBackend):
                     origin="snap",
                     backend="snap",
                     category=category,
-                    description="Snap package",
-               ))
+                    description=description,
+                    constraint=constraint,
+                )
+            )
 
         return updates, 0
 
@@ -249,4 +283,4 @@ class SnapBackend(UpdateBackend):
             packages = [item.name for item in discovered]
         if not packages:
             return ["true"]  # nothing to refresh; exit cleanly
-        return ["snap", "refresh"] + packages
+        return ["pkexec", _INSTALLED_HELPER, "refresh", *packages]
