@@ -1,10 +1,8 @@
-"""Hold/unhold controller for Bodhi Update Manager."""
+"""Backend package-action controller for Bodhi Update Manager."""
 
 from __future__ import annotations
 
 import logging
-import os
-import random
 import subprocess
 import threading
 from gettext import bindtextdomain, textdomain
@@ -13,7 +11,6 @@ from gettext import gettext as _
 from gi.repository import GLib
 
 from bodhi_update.backends import get_registry
-from bodhi_update.install_controller import build_hold_argv
 from bodhi_update.models import CONSTRAINT_NORMAL
 from bodhi_update.utils import format_size
 
@@ -24,69 +21,61 @@ bindtextdomain(APP_NAME, "/usr/share/locale")
 textdomain(APP_NAME)
 
 
-class HoldController:
-    """Handle apt hold/unhold flow and APT row reload."""
+class PackageActionController:
+    """Handle backend package actions such as hold/unhold.
+
+    The controller owns the UI flow.  Individual backends own the package
+    manager semantics and return the argv needed to perform the action.
+    """
 
     def __init__(self, window) -> None:
         self.window = window
-        self._hold_sentinel_path: str | None = None
-        self._hold_poll_source_id: int | None = None
 
-    def poll_hold_sentinel(self, running_msg: str) -> bool:
-        """GLib poller: switch status text once pkexec auth succeeds."""
-        path = self._hold_sentinel_path
-        if path is None:
+    def _get_backend(self, backend_id: str):
+        """Return a registered backend by id, or None."""
+        return get_registry().get_backend(backend_id)
+
+    def backend_supports_hold(self, backend_id: str) -> bool:
+        """Return True if *backend_id* supports hold/unhold actions."""
+        backend = self._get_backend(backend_id)
+        log.debug("HERE")
+        if backend is None:
             return False
+        return bool(backend.supports_hold())
 
-        if os.path.exists(path):
-            try:
-                os.unlink(path)
-            except OSError:
-                pass
-            self._hold_sentinel_path = None
-            self._hold_poll_source_id = None
-            GLib.idle_add(self.window.set_status, running_msg)
-            return False
-
-        return True
-
-    def stop_hold_poller(self) -> None:
-        """Stop the hold sentinel poller without touching the file."""
-        src = self._hold_poll_source_id
-        if src is not None:
-            GLib.source_remove(src)
-            self._hold_poll_source_id = None
-
-    def cancel_hold_sentinel(self) -> None:
-        """Stop the poller and remove any leftover sentinel file."""
-        self.stop_hold_poller()
-        path = self._hold_sentinel_path
-        if path:
-            self._hold_sentinel_path = None
-            try:
-                os.unlink(path)
-            except OSError:
-                pass
-
-    def reload_apt_rows(self) -> None:
-        """Re-query APT rows only, leaving non-APT rows intact."""
+    def reload_backend_rows(self, backend_id: str) -> None:
+        """Re-query one backend, leaving other backend rows intact."""
         from bodhi_update.app import Col
-        non_apt = [
-            list(row) for row in self.window.store if row[Col.BACKEND] != "apt"
+
+        backend = self._get_backend(backend_id)
+        if backend is None:
+            return
+
+        other_rows = [
+            list(row)
+            for row in self.window.store
+            if row[Col.BACKEND] != backend_id
         ]
 
-        apt_updates = []
-        apt_bytes = 0
+        backend_updates = []
+        backend_bytes = 0
 
-        for backend in get_registry().get_all_backends():
-            if backend.backend_id != "apt":
-                continue
-            try:
-                items, total_bytes = backend.get_updates()
-                apt_updates.extend(items)
-                apt_bytes += total_bytes
-            except (OSError, RuntimeError, ValueError):
-                continue
+        try:
+            backend_updates, backend_bytes = backend.get_updates()
+        except (OSError, RuntimeError, ValueError) as exc:
+            log.error(
+                "Backend %s get_updates failed after package action: %s",
+                backend.display_name,
+                exc,
+            )
+            GLib.idle_add(
+                self.window.set_status,
+                _("%(name)s reload failed. (%(exc)s)") % {
+                    "name": backend.display_name,
+                    "exc": exc,
+                },
+            )
+            return
 
         show_desc = self.window.prefs.get("show_descriptions", True)
 
@@ -94,10 +83,10 @@ class HoldController:
         try:
             self.window.store.clear()
 
-            for row in non_apt:
+            for row in other_rows:
                 self.window.store.append(row)
 
-            for update in apt_updates:
+            for update in backend_updates:
                 constraint = update.constraint
                 icon = self.window.backend_service.get_row_icon(
                     update.category,
@@ -110,9 +99,15 @@ class HoldController:
                     show_desc,
                     constraint,
                 )
-                size_str = format_size(update.size)
+                size_str = (
+                    _("N/A")
+                    if update.size == 0 and update.backend != "apt"
+                    else format_size(update.size)
+                )
                 filter_group = self.window.backend_service.get_row_filter_group(
-                    update.backend)
+                    update.backend,
+                )
+
                 self.window.store.append([
                     False,
                     pkg_markup,
@@ -132,81 +127,104 @@ class HoldController:
         finally:
             self.window.store.thaw_notify()
 
-        non_apt_bytes = sum(row[Col.RAW_SIZE]
-                            for row in self.window.store
-                            if row[Col.BACKEND] != "apt")
-        actionable = sum(1 for row in self.window.store
-                         if row[Col.HELD] == CONSTRAINT_NORMAL)
+        other_bytes = sum(
+            row[Col.RAW_SIZE]
+            for row in self.window.store
+            if row[Col.BACKEND] != backend_id
+        )
+        actionable = sum(
+            1
+            for row in self.window.store
+            if row[Col.HELD] == CONSTRAINT_NORMAL
+        )
+
         self.window.update_count_status(
             actionable,
-            apt_bytes + non_apt_bytes,
+            backend_bytes + other_bytes,
             cached=True,
         )
 
-    def do_hold_toggle(self, pkg_name: str, hold: bool) -> None:
-        """Run apt-mark hold/unhold via the privilege helper."""
+    def do_hold_toggle(
+        self,
+        backend_id: str,
+        package_name: str,
+        hold: bool,
+    ) -> None:
+        """Run a backend hold/unhold action."""
         if self.window.refresh_in_progress or self.window.install_in_progress:
             return
 
-        running_msg = _("Locking package...") if hold else _("Unlocking package...")
+        backend = self._get_backend(backend_id)
+        if backend is None:
+            self.window.set_status(
+                _("Unknown backend: %(backend)s") % {"backend": backend_id}
+            )
+            return
 
-        sentinel = (f"/tmp/bodup-hold-{os.getpid()}-"
-                    f"{random.randint(0, 0xFFFFFF):06x}.ok")
-        self._hold_sentinel_path = sentinel
-        self._hold_poll_source_id = GLib.timeout_add(
-            100,
-            self.poll_hold_sentinel,
-            running_msg,
+        if not backend.supports_hold():
+            self.window.set_status(
+                _("%(name)s does not support hold/unhold actions.")
+                % {"name": backend.display_name}
+            )
+            return
+
+        running_msg = (
+            _("Locking package...")
+            if hold
+            else _("Unlocking package...")
         )
-
-        self.window.set_status(_("Waiting for authorization..."))
+        self.window.set_status(running_msg)
 
         def _worker() -> None:
             try:
-                argv = build_hold_argv(
-                    pkg_name,
-                    hold=hold,
-                    sentinel_path=sentinel,
-                )
-            except RuntimeError as exc:
-                self.cancel_hold_sentinel()
+                argv = backend.build_hold_command(package_name, hold)
+            except (NotImplementedError, RuntimeError, ValueError) as exc:
                 GLib.idle_add(self.window.set_status, str(exc))
                 return
 
-            result = subprocess.run(
-                argv,
-                capture_output=True,
-                check=False,
-            )
-
-            sentinel_path = self._hold_sentinel_path
-            if sentinel_path and os.path.exists(sentinel_path):
-                try:
-                    os.unlink(sentinel_path)
-                except OSError:
-                    pass
-                self._hold_sentinel_path = None
-                GLib.idle_add(self.window.set_status, running_msg)
-
-            self.cancel_hold_sentinel()
+            try:
+                result = subprocess.run(
+                    argv,
+                    capture_output=True,
+                    check=False,
+                )
+            except OSError as exc:
+                GLib.idle_add(
+                    self.window.set_status,
+                    _("Failed to launch package action: %(exc)s")
+                    % {"exc": exc},
+                )
+                return
 
             if result.returncode != 0:
-                err_lines = ((result.stderr or b"").decode(
-                    errors="replace").strip().splitlines())
+                err_lines = (
+                    (result.stderr or b"")
+                    .decode(errors="replace")
+                    .strip()
+                    .splitlines()
+                )
                 msg = err_lines[0] if err_lines else _(
-                    "apt-mark failed (unknown error)"
+                    "Package action failed (unknown error)"
                 )
                 GLib.idle_add(self.window.set_status, msg)
                 return
 
             if hold:
-                status = _("Package '%(name)s' is now held.") % {"name": pkg_name}
+                status = _(
+                    "%(backend)s package '%(name)s' is now held."
+                ) % {
+                    "backend": backend.display_name,
+                    "name": package_name,
+                }
             else:
                 status = _(
-                    "Package '%(name)s' is no longer held."
-                ) % {"name": pkg_name}
+                    "%(backend)s package '%(name)s' is no longer held."
+                ) % {
+                    "backend": backend.display_name,
+                    "name": package_name,
+                }
 
-            GLib.idle_add(self.reload_apt_rows)
+            GLib.idle_add(self.reload_backend_rows, backend_id)
             GLib.idle_add(self.window.set_status, status)
             GLib.timeout_add_seconds(
                 3,

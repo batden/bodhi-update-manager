@@ -29,7 +29,7 @@ from bodhi_update.dialogs import (
     PreferencesLabels,
     PreferencesState,
 )
-from bodhi_update.hold_controller import HoldController
+from bodhi_update.hold_controller import PackageActionController
 from bodhi_update.install_controller import InstallController
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
@@ -134,8 +134,7 @@ class UpdateManagerWindow(Gtk.Window):
 
         self.install_controller = InstallController(self)
         self.refresh_controller = RefreshController(self)
-        self.hold_controller = HoldController(self)
-
+        self.package_action_controller = PackageActionController(self)
         # Guard flag used by _set_show_descriptions() to suppress menu re-entry.
         self._syncing_desc = False
 
@@ -887,39 +886,60 @@ class UpdateManagerWindow(Gtk.Window):
     # Context menu (right-click hold/unhold)                               #
     # ------------------------------------------------------------------ #
 
-    def _on_tree_button_press(self, widget: Gtk.TreeView,
-                              event: object) -> bool:
-        """Show APT hold/unhold context menu on right-click."""
+    def _on_tree_button_press(
+        self,
+        widget: Gtk.TreeView,
+        event: object,
+    ) -> bool:
+        """Show backend package-action context menu on right-click."""
         if event.type != Gdk.EventType.BUTTON_PRESS or event.button != 3:
             return False
+
         result = widget.get_path_at_pos(int(event.x), int(event.y))
         if result is None:
             return False
+
         path, *_ = result
         f_iter = self.filter_model.get_iter(path)
         row = self.filter_model[f_iter]
-        if row[Col.BACKEND] != "apt":
+
+        backend_id = row[Col.BACKEND]
+        if not self.package_action_controller.backend_supports_hold(backend_id):
             return False
+
         self._show_hold_menu(
             event,
+            backend_id,
             row[Col.RAW_NAME],
             row[Col.HELD] == CONSTRAINT_HELD,
         )
         return True
 
-    def _show_hold_menu(self, event: object, pkg_name: str,
-                        is_held: bool) -> None:
+    def _show_hold_menu(
+        self,
+        event: object,
+        backend_id: str,
+        pkg_name: str,
+        is_held: bool,
+    ) -> None:
+        """Show hold/unhold context menu for backends that support it."""
         label = _("Unhold package") if is_held else _("Hold package")
+
         menu = Gtk.Menu()
         item = Gtk.ImageMenuItem(label=label)
-        img = Gtk.Image.new_from_icon_name("changes-prevent-symbolic",
-                                           Gtk.IconSize.MENU)
+        img = Gtk.Image.new_from_icon_name(
+            "changes-prevent-symbolic",
+            Gtk.IconSize.MENU,
+        )
         item.set_image(img)
         item.set_always_show_image(True)
         item.connect(
             "activate",
-            lambda _: self.hold_controller.do_hold_toggle(
-                pkg_name, not is_held),
+            lambda _: self.package_action_controller.do_hold_toggle(
+                backend_id,
+                pkg_name,
+                not is_held,
+            ),
         )
         menu.append(item)
         menu.show_all()
