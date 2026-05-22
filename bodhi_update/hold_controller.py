@@ -173,7 +173,7 @@ class PackageActionController:
             if hold
             else _("Unlocking package...")
         )
-        self.window.set_status(running_msg)
+        self.window.set_status(_("Waiting for authorization..."))
 
         def _worker() -> None:
             try:
@@ -181,7 +181,7 @@ class PackageActionController:
             except (NotImplementedError, RuntimeError, ValueError) as exc:
                 GLib.idle_add(self.window.set_status, str(exc))
                 return
-
+            GLib.idle_add(self.window.set_status, running_msg)
             try:
                 result = subprocess.run(
                     argv,
