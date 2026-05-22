@@ -51,7 +51,7 @@ class FlatpakBackend(UpdateBackend):
     def check_busy(self) -> tuple[bool, str]:
         return False, ""
 
-    def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
+    def refresh(self) -> tuple[bool, str]:
         # Remote checks are done live in get_updates(); no warm-up needed.
         return True, ""
 

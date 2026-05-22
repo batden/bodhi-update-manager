@@ -38,7 +38,6 @@ class PackageActionController:
     def backend_supports_hold(self, backend_id: str) -> bool:
         """Return True if *backend_id* supports hold/unhold actions."""
         backend = self._get_backend(backend_id)
-        log.debug("HERE")
         if backend is None:
             return False
         return bool(backend.supports_hold())

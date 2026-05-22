@@ -9,7 +9,7 @@ from pathlib import Path
 import apt
 
 from bodhi_update.backends import BackendMeta, UpdateBackend, _API
-from bodhi_update.install_controller import build_upgrade_argv, get_helper_path
+from bodhi_update.install_controller import build_upgrade_argv, _INSTALLED_HELPER
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
     CONSTRAINT_HELD,
@@ -19,7 +19,7 @@ from bodhi_update.models import (
 )
 from bodhi_update.security_policy import is_user_security_package
 from bodhi_update.update_summary import summarize_updates
-from bodhi_update.utils import find_privilege_tool
+from bodhi_update.utils import require_pkexec
 
 # APT/dpkg lock files whose open FileDescriptions indicate a busy package system.
 _LOCK_PATHS = (
@@ -60,6 +60,14 @@ _NETWORK_ERROR_HINTS = (
     "connection timed out",
     "some index files failed to download",
     "they have been ignored, or old ones used instead",
+)
+
+_AUTH_ERROR_HINTS = (
+    "no authentication agent found",
+    "not authorized",
+    "authentication failed",
+    "operation was cancelled",
+    "authorization required",
 )
 
 _APT_LISTS_DIR = Path("/var/lib/apt/lists")
@@ -300,6 +308,12 @@ def _stderr_mentions_lock(text: str) -> bool:
     return any(hint in lowered for hint in _LOCK_STDERR_HINTS)
 
 
+def _output_mentions_auth_error(text: str) -> bool:
+    """Return True if output suggests Polkit/auth failure."""
+    lowered = text.lower()
+    return any(hint in lowered for hint in _AUTH_ERROR_HINTS)
+
+
 def _output_mentions_network_error(text: str) -> bool:
     """Return True if output text suggests a network or partial update problem."""
     lowered = text.lower()
@@ -333,7 +347,7 @@ class AptBackend(UpdateBackend):
 
     def build_hold_command(self, package: str, hold: bool) -> list[str]:
         action = "hold" if hold else "unhold"
-        return ["pkexec", get_helper_path(), action, package]
+        return ["pkexec",  _INSTALLED_HELPER, action, package]
 
     def build_install_command(self,
                               packages: list[str] | None = None) -> list[str]:
@@ -399,6 +413,13 @@ class AptBackend(UpdateBackend):
         stderr_text = result.stderr or ""
         combined_output = stdout_text + "\n" + stderr_text
 
+        if _output_mentions_auth_error(combined_output):
+            return (
+                False,
+                "Authorization failed or was cancelled. "
+                "Make sure a PolicyKit authentication agent is running.",
+            )
+
         if _output_mentions_network_error(combined_output):
             return False, "Unable to refresh package lists. Please check your internet connection."
 
@@ -414,19 +435,11 @@ class AptBackend(UpdateBackend):
         )
         return False, f"Failed to refresh package lists. ({first_err})"
 
-    def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
+    def refresh(self) -> tuple[bool, str]:
         """Run a privileged 'apt-get update' via the root helper and return '(success,
         message)'."""
-        privilege_tool = find_privilege_tool()
-        if privilege_tool is None:
-            return False, "No privilege tool found (pkexec / sudo / doas)."
 
-        command = [privilege_tool, get_helper_path(), "refresh"]
-        if sentinel_path:
-            command = [
-                privilege_tool,
-                get_helper_path(), "--sentinel", sentinel_path, "refresh"
-            ]
+        command = [require_pkexec(), _INSTALLED_HELPER, "refresh"]
 
         try:
             result = subprocess.run(
@@ -439,8 +452,10 @@ class AptBackend(UpdateBackend):
             )
         except subprocess.TimeoutExpired:
             return False, "Package list refresh timed out."
-        except OSError as exc:
-            return False, f"Failed to launch privilege tool: {exc}"
+        except OSError as err:
+            return False, f"Failed to launch privilege tool: {err}"
+        except RuntimeError as err:
+            return False, err
 
         return self._parse_refresh_output(result)
 

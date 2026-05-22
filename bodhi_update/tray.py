@@ -155,10 +155,10 @@ class TrayIcon:
         """
         win = self._app.get_or_create_window()
         if win.get_visible() and self._shown:
-            log.debug("toggle window hide")
+            # log.debug("toggle window hide")
             win.hide()
         else:
-            log.debug("toggle window show: last count = %d", self._last_count)
+            # log.debug("toggle window show: last count = %d", self._last_count)
             win.present()
             self._shown = True
             # Fixme: Do we want or need this. Maybe on first use only? or not at all?
@@ -175,7 +175,7 @@ class TrayIcon:
 
     def _check_updates(self) -> None:
         """Show the window and trigger an update check."""
-        log.debug("check updates")
+        # log.debug("check updates")
         win = self._app.get_or_create_window(no_cache=True)
         win.present()
         self._shown = True
@@ -192,10 +192,10 @@ class TrayIcon:
     def refresh_now(self) -> None:
         """Start an immediate tray update-count poll if one is not already running."""
         if self._poll_running:
-            log.debug("Skipping immediate tray refresh: worker already running")
+            # log.debug("Skipping immediate tray refresh: worker already running")
             return
 
-        log.debug("Starting immediate tray refresh")
+        # log.debug("Starting immediate tray refresh")
 
         self._poll_running = True
         threading.Thread(
@@ -207,7 +207,7 @@ class TrayIcon:
     def _on_poll_timer(self) -> bool:
         """Periodic timer callback for background polling."""
         if not _read_pref("show_notifications"):
-            log.debug("Background polling disabled")
+            # log.debug("Background polling disabled")
             return True
 
         self.refresh_now()
@@ -221,12 +221,12 @@ class TrayIcon:
         try:
             self._poll_worker()
         finally:
-            log.debug("Background poll finished")
+            # log.debug("Background poll finished")
             self._poll_running = False
 
     def _poll_worker(self) -> None:
         """Read lightweight cached update summaries from backends."""
-        log.debug("Background poll started")
+        # log.debug("Background poll started")
 
         try:
             initialize_registry()
@@ -243,7 +243,7 @@ class TrayIcon:
                                  backend.__class__.__name__)
 
             try:
-                log.debug("Polling backend summary: %s", backend_id)
+                # log.debug("Polling backend summary: %s", backend_id)
                 summary = backend.get_update_summary()
 
                 count += summary.count
@@ -253,18 +253,18 @@ class TrayIcon:
                 elif summary.severity == "medium" and severity != "high":
                     severity = "medium"
 
-                log.debug(
+                """ log.debug(
                     "Backend %s summary: %d updates, severity=%s",
                     backend_id,
                     summary.count,
                     summary.severity,
-                )
+                )"""
 
             except _POLL_ERRORS:
                 log.exception("Backend %s skipped during tray poll", backend_id)
                 continue
 
-        log.debug("Poll completed: %d updates, severity=%s", count, severity)
+        # log.debug("Poll completed: %d updates, severity=%s", count, severity)
         GLib.idle_add(self.set_update_count, count, severity)
 
     # ------------------------------------------------------------------

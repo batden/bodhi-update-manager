@@ -30,7 +30,7 @@ from bodhi_update.dialogs import (
     PreferencesState,
 )
 from bodhi_update.hold_controller import PackageActionController
-from bodhi_update.install_controller import InstallController
+from bodhi_update.install_controller import InstallController, _INSTALLED_HELPER
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
     CONSTRAINT_HELD,
@@ -49,7 +49,7 @@ from bodhi_update.status_messages import (
 )
 from bodhi_update.tray import TrayIcon
 from bodhi_update.utils import (
-    find_privilege_tool,
+    require_pkexec,
     format_size,
     get_pkg_severity,
     reboot_required,
@@ -1166,14 +1166,10 @@ class UpdateManagerWindow(Gtk.Window):
         if response_id != Gtk.ResponseType.ACCEPT:
             return
 
-        privilege_tool = find_privilege_tool()
-        if privilege_tool is None:
-            self.set_status(_("No privilege tool found. Please reboot manually."))
-            return
-
-        from bodhi_update.install_controller import get_helper_path
         try:
-            subprocess.Popen([privilege_tool, get_helper_path(), "reboot"])
+            subprocess.Popen([require_pkexec(), _INSTALLED_HELPER, "reboot"])
+        except RuntimeError:
+            self.set_status(_("pkexec is required. Please reboot manually."))
         except OSError as exc:
             self.set_status(_("Failed to initiate reboot: %(exc)s") % {"exc": exc})
 

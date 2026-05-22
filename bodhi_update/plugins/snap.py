@@ -14,8 +14,9 @@ from bodhi_update.models import (
     UpdateSummary,
 )
 from bodhi_update.security_policy import is_user_security_package
+from bodhi_update.utils import require_pkexec
 
-_INSTALLED_HELPER = "/usr/libexec/um-actions-snap"
+_SNAP_HELPER = "/usr/libexec/um-actions-snap"
 
 class SnapBackend(UpdateBackend):
     """Update backend that queries installed Snap packages."""
@@ -71,9 +72,8 @@ class SnapBackend(UpdateBackend):
         """Return False because Snap locking is handled by snapd."""
         return False, ""
 
-    def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
+    def refresh(self) -> tuple[bool, str]:
         """No-op refresh; Snap update discovery is queried live."""
-        del sentinel_path
         return True, ""
 
     def supports_hold(self) -> bool:
@@ -81,7 +81,7 @@ class SnapBackend(UpdateBackend):
 
     def build_hold_command(self, package: str, hold: bool) -> list[str]:
         action = "hold" if hold else "unhold"
-        return ["pkexec", _INSTALLED_HELPER, action, package]
+        return [require_pkexec(), _SNAP_HELPER, action, package]
     
     # ------------------------------------------------------------------ #
     # Internal helpers                                                     #
@@ -283,4 +283,4 @@ class SnapBackend(UpdateBackend):
             packages = [item.name for item in discovered]
         if not packages:
             return ["true"]  # nothing to refresh; exit cleanly
-        return ["pkexec", _INSTALLED_HELPER, "refresh", *packages]
+        return [require_pkexec(), _SNAP_HELPER, "refresh", *packages]

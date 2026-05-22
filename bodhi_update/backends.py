@@ -127,12 +127,10 @@ class UpdateBackend(ABC):
         """
         return False, ""
 
-    def refresh(self, sentinel_path: str | None = None) -> tuple[bool, str]:
+    def refresh(self) -> tuple[bool, str]:
         """Refresh the local list of available updates.
 
         Return (True, "") on success, or (False, error_message).
-        The optional *sentinel_path* is forwarded to backends that support
-        the pkexec auth-success handshake (currently APT only).
         """
         return True, ""
 

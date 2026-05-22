@@ -20,8 +20,18 @@ except ImportError:
 _SYSTEM_PREFIX = "/usr/lib/"
 REBOOT_REQUIRED_PATH = "/var/run/reboot-required"
 
-# Privilege tools tried in preference order.
-_PRIVILEGE_TOOLS = ("pkexec", "sudo", "doas")
+def find_pkexec() -> str | None:
+    """Return pkexec path if available, else None."""
+    return shutil.which("pkexec")
+
+
+def require_pkexec() -> str:
+    """Return pkexec path or raise RuntimeError."""
+    pkexec = find_pkexec()
+    if pkexec is None:
+        log.debug("pkexec is unavailable")
+        raise RuntimeError("pkexec is required but was not found.")
+    return pkexec
 
 
 def format_size(num_bytes: int) -> str:
@@ -39,22 +49,6 @@ def format_size(num_bytes: int) -> str:
 def reboot_required() -> bool:
     """Return True if the system has flagged that a restart is needed."""
     return os.path.exists(REBOOT_REQUIRED_PATH)
-
-
-def find_privilege_tool() -> str | None:
-    """Return the first available privilege-escalation binary."""
-
-    sys_installed = os.path.abspath(__file__).startswith(_SYSTEM_PREFIX)
-    for tool in _PRIVILEGE_TOOLS:
-        # If running locally in a terminal do not use pkexec
-        if tool == "pkexec" and not sys_installed:
-            continue
-        if shutil.which(tool):
-            log.debug("Privilege Tool: %s, %d", tool, sys_installed)
-            return tool
-
-    log.error("No Privilege Tool found.")
-    return None
 
 
 # Keep this list small: core platform plumbing only.
