@@ -43,6 +43,65 @@ def test_reboot_required_false(monkeypatch: pytest.MonkeyPatch) -> None:
 
     assert reboot_required() is False
 
+def test_find_pkexec_returns_shutil_result(monkeypatch: pytest.MonkeyPatch) -> None:
+    """find_pkexec should return the path reported by shutil.which."""
+    monkeypatch.setattr(utils.shutil, "which", lambda name: "/usr/bin/pkexec")
+
+    assert utils.find_pkexec() == "/usr/bin/pkexec"
+
+
+def test_find_pkexec_returns_none_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """find_pkexec should return None when pkexec is unavailable."""
+    monkeypatch.setattr(utils.shutil, "which", lambda name: None)
+
+    assert utils.find_pkexec() is None
+
+
+def test_require_pkexec_returns_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    """require_pkexec should return the pkexec path when available."""
+    monkeypatch.setattr(utils, "find_pkexec", lambda: "/usr/bin/pkexec")
+
+    assert utils.require_pkexec() == "/usr/bin/pkexec"
+
+
+def test_require_pkexec_raises_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """require_pkexec should raise RuntimeError when pkexec is unavailable."""
+    monkeypatch.setattr(utils, "find_pkexec", lambda: None)
+
+    with pytest.raises(RuntimeError, match="pkexec is required"):
+        utils.require_pkexec()
+
+def test_validate_deb_files_accepts_deb_file(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """validate_deb_files should return normalized paths for .deb files."""
+    deb_file = tmp_path / "example.deb"
+    deb_file.write_bytes(b"fake deb content")
+
+    monkeypatch.setattr(utils, "magic", None)
+
+    assert utils.validate_deb_files([str(deb_file)]) == [str(deb_file.resolve())]
+
+def test_validate_deb_files_rejects_missing_file(tmp_path) -> None:
+    """validate_deb_files should reject missing files."""
+    missing = tmp_path / "missing.deb"
+
+    with pytest.raises(FileNotFoundError, match="File not found"):
+        utils.validate_deb_files([str(missing)])
+
+
+def test_validate_deb_files_rejects_non_deb_file(tmp_path) -> None:
+    """validate_deb_files should reject files without a .deb suffix."""
+    txt_file = tmp_path / "example.txt"
+    txt_file.write_text("not a deb", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Not a Debian package"):
+        utils.validate_deb_files([str(txt_file)])
 
 @pytest.mark.parametrize(
     ("name", "category", "backend", "expected"),
