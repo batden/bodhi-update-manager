@@ -90,8 +90,7 @@ class TrayIcon:
     }
 
     # Background poll interval (seconds).
-    _POLL_INTERVAL = 15 * 60  # 15 minutes
-    _INITIAL_DELAY = 5  # seconds after startup before first check
+    _POLL_INTERVAL = 5 * 60  # 15 minutes
 
     def __init__(self, app: UpdateManagerApplication) -> None:
         """Initialise the tray icon and schedule the first background poll."""
@@ -109,11 +108,14 @@ class TrayIcon:
             self._ICON_NAME,
             appindicator.IndicatorCategory.APPLICATION_STATUS,
         )
+
         self._indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
         self._indicator.set_menu(menu)
+        GLib.idle_add(self._on_initial_poll_idle)
 
+        # Schedule normal background polling at the real interval.
         self._poll_source_id = GLib.timeout_add_seconds(
-            self._INITIAL_DELAY,
+            self._POLL_INTERVAL,
             self._on_poll_timer,
         )
 
@@ -204,6 +206,11 @@ class TrayIcon:
             name="bodhi-update-poller",
         ).start()
 
+    def _on_initial_poll_idle(self) -> bool:
+        """Run the first tray poll after the tray icon has been created."""
+        self._on_poll_timer()
+        return False
+
     def _on_poll_timer(self) -> bool:
         """Periodic timer callback for background polling."""
         if not _read_pref("show_notifications"):
@@ -226,7 +233,7 @@ class TrayIcon:
 
     def _poll_worker(self) -> None:
         """Read lightweight cached update summaries from backends."""
-        # log.debug("Background poll started")
+        log.debug("Background poll started")
 
         try:
             initialize_registry()
