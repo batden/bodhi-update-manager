@@ -110,9 +110,8 @@ msgid "Repository"
 msgstr "Repozitár"
 
 #: bodhi_update/app.py:436
-#, fuzzy
 msgid "Installing updates..."
-msgstr "Inštalujú sa vybrané aktualizácie..."
+msgstr "Inštalujú sa aktualizácie..."
 
 #: bodhi_update/app.py:441 bodhi_update/app.py:448
 msgid "Waiting for authentication..."

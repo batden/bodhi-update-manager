@@ -110,9 +110,8 @@ msgid "Repository"
 msgstr "Repozitář"
 
 #: bodhi_update/app.py:436
-#, fuzzy
 msgid "Installing updates..."
-msgstr "Instalují se vybrané aktualizace..."
+msgstr "Instalují se aktualizace..."
 
 #: bodhi_update/app.py:441 bodhi_update/app.py:448
 msgid "Waiting for authentication..."
