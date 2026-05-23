@@ -34,8 +34,10 @@ except (ValueError, ImportError):
 
 from gi.repository import GLib, Gtk
 
+
 if TYPE_CHECKING:
     from bodhi_update.app import UpdateManagerApplication
+from bodhi_update.update_summary import combine_backend_summaries
 
 APP_NAME = "bodhi-update-manager"
 log = logging.getLogger(APP_NAME)
@@ -242,37 +244,14 @@ class TrayIcon:
             GLib.idle_add(self.set_update_count, 0, "low")
             return
 
-        count = 0
-        severity = "low"
+        summary = combine_backend_summaries(get_registry().get_all_backends())
 
-        for backend in get_registry().get_all_backends():
-            backend_id = getattr(backend, "backend_id",
-                                 backend.__class__.__name__)
-
-            try:
-                # log.debug("Polling backend summary: %s", backend_id)
-                summary = backend.get_update_summary()
-
-                count += summary.count
-
-                if summary.severity == "high":
-                    severity = "high"
-                elif summary.severity == "medium" and severity != "high":
-                    severity = "medium"
-
-                """ log.debug(
-                    "Backend %s summary: %d updates, severity=%s",
-                    backend_id,
-                    summary.count,
-                    summary.severity,
-                )"""
-
-            except _POLL_ERRORS:
-                log.exception("Backend %s skipped during tray poll", backend_id)
-                continue
-
-        # log.debug("Poll completed: %d updates, severity=%s", count, severity)
-        GLib.idle_add(self.set_update_count, count, severity)
+        log.debug(
+            "Poll completed: %d updates, severity=%s",
+            summary.count,
+            summary.severity,
+        )
+        GLib.idle_add(self.set_update_count, summary.count, summary.severity)
 
     # ------------------------------------------------------------------
     # Indicator update
