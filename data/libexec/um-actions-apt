@@ -31,12 +31,12 @@ def require_root() -> int:
 
 def refresh() -> int:
     """Refresh APT package lists."""
-    return run(["apt-get", "update"])
+    return run(["apt-get", "update", "-q"])
 
 
 def upgrade() -> int:
     """Run a full system upgrade."""
-    return run(["apt-get", "full-upgrade"])
+    return run(["apt-get", "full-upgrade", "-y"])
 
 
 def install(packages: list[str]) -> int:
@@ -44,7 +44,7 @@ def install(packages: list[str]) -> int:
     if not packages:
         return upgrade()
 
-    return run(["apt-get", "install", *packages])
+    return run(["apt-get", "install", "-y", *packages])
 
 
 def install_deb(path: str) -> int:
@@ -59,7 +59,7 @@ def install_deb(path: str) -> int:
         print(f"Not a Debian package: {path}", file=sys.stderr)
         return 1
 
-    return run(["apt-get", "install", str(deb_path)])
+    return run(["apt-get", "install", "-y", str(deb_path)])
 
 
 def hold(package: str) -> int:
