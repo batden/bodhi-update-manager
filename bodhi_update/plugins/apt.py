@@ -9,7 +9,6 @@ from pathlib import Path
 import apt
 
 from bodhi_update.backends import BackendMeta, UpdateBackend, _API
-from bodhi_update.install_controller import build_upgrade_argv, _INSTALLED_HELPER
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
     CONSTRAINT_HELD,
@@ -19,7 +18,9 @@ from bodhi_update.models import (
 )
 from bodhi_update.security_policy import is_user_security_package
 from bodhi_update.update_summary import summarize_updates
-from bodhi_update.utils import require_pkexec
+from bodhi_update.utils import require_pkexec, validate_deb_files
+
+_APT_HELPER = "/usr/libexec/um-actions-apt"
 
 # APT/dpkg lock files whose open FileDescriptions indicate a busy package system.
 _LOCK_PATHS = (
@@ -73,6 +74,23 @@ _AUTH_ERROR_HINTS = (
 _APT_LISTS_DIR = Path("/var/lib/apt/lists")
 _DPKG_STATUS_PATH = Path("/var/lib/dpkg/status")
 
+
+def build_upgrade_argv(packages: list[str] | None = None) -> list[str]:
+    """Return argv for an APT upgrade or targeted install via pkexec."""
+    if packages:
+        return [require_pkexec(), _APT_HELPER, "install", *packages]
+    return [require_pkexec(), _APT_HELPER, "upgrade"]
+
+def build_deb_install_argv(deb_path: str) -> list[str]:
+    """Return argv for installing a local .deb file via pkexec."""
+    norm_path = validate_deb_files([deb_path])[0]
+    return [require_pkexec(), _APT_HELPER, "install-deb", norm_path]
+
+
+def build_hold_argv(package: str, *, hold: bool) -> list[str]:
+    """Return argv for holding or unholding one APT package via pkexec."""
+    action = "hold" if hold else "unhold"
+    return [require_pkexec(), _APT_HELPER, action, package]
 
 def _apt_state_stamp() -> tuple[float, float]:
     """Return a cheap stamp representing local APT/dpkg state."""
@@ -347,7 +365,7 @@ class AptBackend(UpdateBackend):
 
     def build_hold_command(self, package: str, hold: bool) -> list[str]:
         action = "hold" if hold else "unhold"
-        return ["pkexec",  _INSTALLED_HELPER, action, package]
+        return ["pkexec",  _APT_HELPER, action, package]
 
     def build_install_command(self,
                               packages: list[str] | None = None) -> list[str]:
@@ -439,7 +457,7 @@ class AptBackend(UpdateBackend):
         """Run a privileged 'apt-get update' via the root helper and return '(success,
         message)'."""
 
-        command = [require_pkexec(), _INSTALLED_HELPER, "refresh"]
+        command = [require_pkexec(), _APT_HELPER, "refresh"]
 
         try:
             result = subprocess.run(

@@ -30,7 +30,7 @@ from bodhi_update.dialogs import (
     PreferencesState,
 )
 from bodhi_update.hold_controller import PackageActionController
-from bodhi_update.install_controller import InstallController, _INSTALLED_HELPER
+from bodhi_update.install_controller import InstallController
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
     CONSTRAINT_HELD,
@@ -1120,9 +1120,15 @@ class UpdateManagerWindow(Gtk.Window):
 
     def _launch_deb_install(self, deb_path: str) -> None:
         deb_name = os.path.basename(deb_path)
+
         try:
-            self.install_controller.launch_deb_install(
-                deb_path,
+            apt_backend = self.backend_service.get_backend("apt")
+            if apt_backend is None:
+                raise RuntimeError(_("APT backend is not configured."))
+
+            argv = apt_backend.build_deb_install_command(deb_path)
+            self.install_controller.launch_install(
+                argv,
                 _("Installing %(deb_name)s...") % {"deb_name": deb_name},
             )
         except RuntimeError as exc:
@@ -1167,7 +1173,10 @@ class UpdateManagerWindow(Gtk.Window):
             return
 
         try:
-            subprocess.Popen([require_pkexec(), _INSTALLED_HELPER, "reboot"])
+            # Fix me: Using hard code privileged Apt action helper
+            #         Perhaps move reboot to a small generic system helper later
+            #         and rethink where it belongs.
+            subprocess.Popen([require_pkexec(), "/usr/libexec/um-actions-apt", "reboot"])
         except RuntimeError:
             self.set_status(_("pkexec is required. Please reboot manually."))
         except OSError as exc:

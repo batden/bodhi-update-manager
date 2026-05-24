@@ -1,4 +1,4 @@
-"""Install/auth controller for Bodhi Update Manager."""
+"""Install/progress controller for Bodhi Update Manager."""
 
 from __future__ import annotations
 
@@ -13,7 +13,6 @@ gi.require_version("Vte", "2.91")
 from gi.repository import GLib, Vte
 
 from bodhi_update.dialogs import Message
-from bodhi_update.utils import validate_deb_files, require_pkexec
 
 APP_NAME = "bodhi-update-manager"
 log = logging.getLogger(APP_NAME)
@@ -21,34 +20,14 @@ log = logging.getLogger(APP_NAME)
 bindtextdomain(APP_NAME, "/usr/share/locale")
 textdomain(APP_NAME)
 
-# ---------------------------------------------------------------------------
-# Installed apt-helper registered in the polkit policy file
-# ---------------------------------------------------------------------------
-
-_INSTALLED_HELPER = "/usr/libexec/um-actions-apt"
-
-
-def build_upgrade_argv(packages: list[str] | None = None) -> list[str]:
-    """Return argv for an APT upgrade or targeted install via pkexec."""
-    if packages:
-        return [require_pkexec(), _INSTALLED_HELPER, "install", *packages]
-    return [require_pkexec(), _INSTALLED_HELPER, "upgrade"]
-
-
-def build_deb_install_argv(deb_path: str) -> list[str]:
-    """Return argv for installing a local .deb file via pkexec."""
-    norm_path = validate_deb_files([deb_path])[0]
-    return [require_pkexec(), _INSTALLED_HELPER, "install-deb", norm_path]
-
-
-def build_hold_argv(package: str, *, hold: bool) -> list[str]:
-    """Return argv for holding or unholding one APT package via pkexec."""
-    action = "hold" if hold else "unhold"
-    return [require_pkexec(), _INSTALLED_HELPER, action, package]
-
 
 class InstallController:
-    """Handle install/auth flow and VTE-driven progress UI."""
+    """Handle install/auth flow and VTE-driven progress UI.
+
+    This controller intentionally does not know about APT, Snap, Flatpak,
+    helper paths, or package-manager actions. Backends build argv; this class
+    only presents progress and runs argv in the VTE.
+    """
 
     def __init__(self, window) -> None:
         self.window = window
@@ -92,16 +71,14 @@ class InstallController:
         except (AttributeError, TypeError, RuntimeError):
             pass
 
-    def mark_install_running(self) -> None:
+    def mark_install_running(self) -> bool:
         """Transition install UI from AUTH_PENDING to RUNNING."""
         if self.install_state != "AUTH_PENDING":
-            return
+            return False
 
         self.install_state = "RUNNING"
         self.install_output_started = True
-        self.window.install_phase_label.set_text(
-            _("This may take a few minutes.")
-        )
+        self.window.install_phase_label.set_text(_("This may take a few minutes."))
         self.window.install_progress.set_text(_("Installing updates..."))
         self.window.set_status(_("Installing updates..."))
 
@@ -112,7 +89,11 @@ class InstallController:
 
         if self.install_pulse_source_id is None:
             self.install_pulse_source_id = GLib.timeout_add(
-                150, self._pulse_install_progress)
+                150,
+                self._pulse_install_progress,
+            )
+
+        return False
 
     def on_spawn_complete(self, _terminal, pid, error, _user_data=None) -> None:
         """VTE spawn_async callback for hard spawn failures."""
@@ -152,18 +133,16 @@ class InstallController:
         )
 
     def launch_install(self, argv: list[str], title: str) -> None:
-        """Launch an install command through pkexec."""
+        """Launch an install command.
+
+        The argv must already be built by the selected backend.
+        """
         log.info("Starting installation: %s", title)
         log.debug("Command: %s", argv)
 
         self.start_install_progress(title)
         self.spawn_install_command(argv)
         GLib.idle_add(self.mark_install_running)
-
-    def launch_deb_install(self, deb_path: str, title: str) -> None:
-        """Build argv for a local .deb and launch it."""
-        argv = build_deb_install_argv(deb_path)
-        self.launch_install(argv, title)
 
     def finish_install_success(self) -> None:
         """Update the UI for a successful install."""
@@ -195,6 +174,7 @@ class InstallController:
             _("Update failed. Exit code: %(exit_code)s")
             % {"exit_code": exit_code}
         )
+
         details = self.window._terminal_text().strip()
         if details:
             message = details.splitlines()[-1]
