@@ -10,33 +10,37 @@ import subprocess
 import sys
 from pathlib import Path
 
+APT_ENV = {
+    **os.environ,
+    "DEBIAN_FRONTEND": "noninteractive",
+}
 
-def run(argv: list[str]) -> int:
+APT_DPKG_OPTIONS = [
+    "-o", "Dpkg::Options::=--force-confdef",
+    "-o", "Dpkg::Options::=--force-confold",
+]
+
+
+def run(argv: list[str], *, env: dict[str, str] | None = None) -> int:
     """Run argv directly without a shell."""
     try:
-        return subprocess.run(argv, check=False).returncode
+        return subprocess.run(argv, env=env, check=False).returncode
     except OSError as exc:
         print(f"Failed to run {' '.join(argv)}: {exc}", file=sys.stderr)
         return 1
 
 
-def require_root() -> int:
-    """Return 0 if running as root, otherwise non-zero."""
-    if os.geteuid() == 0:
-        return 0
-
-    print("This helper must be run as root.", file=sys.stderr)
-    return 1
-
-
 def refresh() -> int:
     """Refresh APT package lists."""
-    return run(["apt-get", "update", "-q"])
+    return run(["apt-get", "update", "-q"], env=APT_ENV)
 
 
 def upgrade() -> int:
     """Run a full system upgrade."""
-    return run(["apt-get", "full-upgrade", "-y"])
+    return run(
+        ["apt-get", "-y", *APT_DPKG_OPTIONS, "full-upgrade"],
+        env=APT_ENV,
+    )
 
 
 def install(packages: list[str]) -> int:
@@ -44,7 +48,10 @@ def install(packages: list[str]) -> int:
     if not packages:
         return upgrade()
 
-    return run(["apt-get", "install", "-y", *packages])
+    return run(
+        ["apt-get", "-y", *APT_DPKG_OPTIONS, "install", *packages],
+        env=APT_ENV,
+    )
 
 
 def install_deb(path: str) -> int:
@@ -59,7 +66,19 @@ def install_deb(path: str) -> int:
         print(f"Not a Debian package: {path}", file=sys.stderr)
         return 1
 
-    return run(["apt-get", "install", "-y", str(deb_path)])
+    return run(
+        ["apt-get", "-y", *APT_DPKG_OPTIONS, "install", str(deb_path)],
+        env=APT_ENV,
+    )
+
+
+def require_root() -> int:
+    """Return 0 if running as root, otherwise non-zero."""
+    if os.geteuid() == 0:
+        return 0
+
+    print("This helper must be run as root.", file=sys.stderr)
+    return 1
 
 
 def hold(package: str) -> int:
