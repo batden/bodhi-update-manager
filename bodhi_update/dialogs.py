@@ -158,6 +158,7 @@ class PreferencesLabels:
     title: str
     notifications_label: str
     held_label: str
+    welcome_label: str
     cancel_label: str
     apply_label: str
 
@@ -168,6 +169,7 @@ class PreferencesState:
 
     show_notifications: bool
     show_held_packages: bool
+    show_welcome: bool
     backend_states: list[tuple[str, str, bool]]
 
 
@@ -208,6 +210,10 @@ class PreferencesDialog(Gtk.Dialog):
         self.held_check.set_active(state.show_held_packages)
         content.pack_start(self.held_check, False, False, 0)
 
+        self.welcome_check = Gtk.CheckButton(label=labels.welcome_label)
+        self.welcome_check.set_active(state.show_welcome)
+        content.pack_start(self.welcome_check, False, False, 0)
+
         # --- Backend section (only if any backends exist) ---
 
         if state.backend_states:
@@ -236,11 +242,152 @@ class PreferencesDialog(Gtk.Dialog):
         return {
             "show_notifications": self.notif_check.get_active(),
             "show_held_packages": self.held_check.get_active(),
+            "show_welcome": self.welcome_check.get_active(),
             "backend_visibility": {
                 backend_id: check.get_active()
                 for backend_id, check in self._backend_checks.items()
             },
         }
+
+
+class WelcomeDialog(Gtk.Dialog):
+    """First-run welcome dialog for the Update Manager."""
+
+    def __init__(self, parent: Gtk.Window, show_on_startup: bool = True) -> None:
+        super().__init__(
+            title=_("Welcome"),
+            transient_for=parent,
+            modal=True,
+            destroy_with_parent=True,
+        )
+
+        self.set_border_width(10)
+        self.set_default_size(560, 520)
+        # Fix me
+        # self.add_button(_("Help"), Gtk.ResponseType.HELP)
+        self.add_button(_("OK"), Gtk.ResponseType.OK)
+        self.set_default_response(Gtk.ResponseType.OK)
+
+        self.show_startup_check = Gtk.CheckButton(
+            label=_("Show this welcome screen on startup")
+        )
+        self.show_startup_check.set_active(show_on_startup)
+
+        self._build_ui()
+        self.show_all()
+
+    def _build_ui(self) -> None:
+        content = self.get_content_area()
+        content.set_spacing(12)
+
+        outer_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        outer_box.set_border_width(6)
+        outer_box.set_hexpand(True)
+        outer_box.set_vexpand(True)
+        content.pack_start(outer_box, True, True, 0)
+
+        header_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        header_box.set_border_width(12)
+        outer_box.pack_start(header_box, False, False, 0)
+
+        scrolled = Gtk.ScrolledWindow()
+        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolled.set_hexpand(True)
+        scrolled.set_vexpand(True)
+
+        outer_box.pack_start(scrolled, True, True, 0)
+        body_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        body_box.set_border_width(6)
+        scrolled.add(body_box)
+
+        title = Gtk.Label()
+        title.set_markup(f"<b>{_('Welcome to the Update Manager')}</b>")
+        title.set_xalign(0.0)
+        header_box.pack_start(title, False, False, 0)
+
+        intro = Gtk.Label(
+            label=_(
+                "This update manager helps you review, select, and install available "
+                "updates from supported package sources."
+            )
+        )
+        intro.set_line_wrap(True)
+        intro.set_xalign(0.0)
+        header_box.pack_start(intro, False, False, 0)
+
+        self._add_info_row(
+            body_box,
+            "security-high-symbolic",
+            _("Security and system updates"),
+            _(
+                "Important updates are highlighted so security fixes, kernel updates, "
+                "and core system packages are easier to notice."
+            ),
+        )
+
+        self._add_info_row(
+            body_box,
+            "view-list-symbolic",
+            _("Review before installing"),
+            _(
+                "Updates are shown in a clear list with package names, versions, "
+                "download sizes, sources, and optional descriptions."
+            ),
+        )
+
+        self._add_info_row(
+            body_box,
+            "package-x-generic-symbolic",
+            _("Multiple package sources"),
+            _(
+                "The update list can include supported backends such as Debian/Ubuntu "
+                "packages, Snap packages, and Flatpak packages when they are available."
+            ),
+        )
+
+        footer = Gtk.Label(
+            label=_(
+                "The goal is to provide a flexible update tool that stays "
+                "out of your way while still giving you clear control over what gets "
+                "updated."
+            )
+        )
+        footer.set_line_wrap(True)
+        footer.set_xalign(0.0)
+        body_box.pack_start(footer, False, False, 0)
+        outer_box.pack_start(self.show_startup_check, False, False, 0)
+
+    def _add_info_row(
+        self,
+        parent: Gtk.Box,
+        icon_name: str,
+        heading: str,
+        text: str,
+    ) -> None:
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        row.set_border_width(6)
+        parent.pack_start(row, False, True, 0)
+
+        icon = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
+        icon.set_valign(Gtk.Align.START)
+        row.pack_start(icon, False, False, 0)
+
+        text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        row.pack_start(text_box, True, True, 0)
+
+        heading_label = Gtk.Label()
+        heading_label.set_markup(f"<b>{heading}</b>")
+        heading_label.set_xalign(0.0)
+        text_box.pack_start(heading_label, False, False, 0)
+
+        body_label = Gtk.Label(label=text)
+        body_label.set_line_wrap(True)
+        body_label.set_xalign(0.0)
+        text_box.pack_start(body_label, False, False, 0)
+
+    def get_show_on_startup(self) -> bool:
+        """Return whether the welcome dialog should appear on startup."""
+        return self.show_startup_check.get_active()
 
 
 class Message(Gtk.MessageDialog):

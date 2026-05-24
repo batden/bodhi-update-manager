@@ -14,6 +14,7 @@ DEFAULT_PREFS: dict[str, Any] = {
     "show_descriptions": True,
     "show_notifications": True,
     "show_held_packages": False,
+    "show_welcome": True,
     "show_snap": True,
     "show_flatpak": True,
     "backend_visibility": {},

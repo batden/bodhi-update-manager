@@ -28,6 +28,7 @@ from bodhi_update.dialogs import (
     PreferencesDialog,
     PreferencesLabels,
     PreferencesState,
+    WelcomeDialog,
 )
 from bodhi_update.hold_controller import PackageActionController
 from bodhi_update.install_controller import InstallController
@@ -181,6 +182,7 @@ class UpdateManagerWindow(Gtk.Window):
                 self.updates_stack.set_visible_child_name("list")
                 self.set_status(ready_status_text())
                 self._update_action_sensitivity()
+                GLib.idle_add(self._maybe_show_welcome_dialog)
             else:
                 log.debug("Build ui default")
                 #self.show_all()
@@ -191,7 +193,7 @@ class UpdateManagerWindow(Gtk.Window):
                     target=self._load_cached_updates_on_startup,
                     daemon=True,
                 ).start()
-
+                GLib.idle_add(self._maybe_show_welcome_dialog) # fix me this is second one
         return False
 
     # ------------------------------------------------------------------ #
@@ -262,6 +264,11 @@ class UpdateManagerWindow(Gtk.Window):
 
         # Help Menu
         help_menu = Gtk.Menu()
+        
+        welcome_item = Gtk.MenuItem(label=_("Welcome"))
+        welcome_item.connect("activate", lambda _: self._show_welcome_dialog())
+        help_menu.append(welcome_item)
+       
         help_item = Gtk.MenuItem(label=_("Help"))
         help_item.set_submenu(help_menu)
 
@@ -560,6 +567,30 @@ class UpdateManagerWindow(Gtk.Window):
         if self.category_combo.get_active_id() is None:
             self.category_combo.set_active_id("all")
 
+    def _show_welcome_dialog(self) -> None:
+        """Display the welcome dialog manually."""
+        dialog = WelcomeDialog(
+            self,
+            show_on_startup=self.prefs.get("show_welcome", True),
+        )
+        response = dialog.run()
+
+        if response == Gtk.ResponseType.HELP:
+            self.set_status(_("Help is not available yet."))
+
+        new_value = dialog.get_show_on_startup()
+        if self.prefs.get("show_welcome", True) != new_value:
+            self.prefs["show_welcome"] = new_value
+            self.pref_store.save(self.prefs)
+
+        dialog.destroy()
+
+    def _maybe_show_welcome_dialog(self) -> bool:
+        """Show the welcome dialog on startup if enabled in preferences."""
+        if self.prefs.get("show_welcome", True):
+            self._show_welcome_dialog()
+        return False
+
     def _show_preferences_dialog(self) -> None:
         backend_states = [
             (
@@ -571,20 +602,22 @@ class UpdateManagerWindow(Gtk.Window):
         ]
 
         dialog = PreferencesDialog(
-            self,
-            PreferencesLabels(
-                title=_("Preferences"),
-                notifications_label=_("Show notifications"),
-                held_label=_("Show held/blocked packages"),
-                cancel_label=_("Cancel"),
-                apply_label=_("Apply"),
-            ),
-            PreferencesState(
-                show_notifications=self.prefs.get("show_notifications", True),
-                show_held_packages=self.prefs.get("show_held_packages", False),
-                backend_states=backend_states,
-            ),
-        )
+                    self,
+                    PreferencesLabels(
+                        title=_("Preferences"),
+                        notifications_label=_("Show notifications"),
+                        held_label=_("Show held/blocked packages"),
+                        welcome_label=_("Show welcome screen on startup"),
+                        cancel_label=_("Cancel"),
+                        apply_label=_("Apply"),
+                    ),
+                    PreferencesState(
+                        show_notifications=self.prefs.get("show_notifications", True),
+                        show_held_packages=self.prefs.get("show_held_packages", False),
+                        show_welcome=self.prefs.get("show_welcome", True),
+                        backend_states=backend_states,
+                    ),
+                )
 
         response = dialog.run()
 
@@ -604,6 +637,11 @@ class UpdateManagerWindow(Gtk.Window):
             new_held = values["show_held_packages"]
             if self.prefs.get("show_held_packages", False) != new_held:
                 self.prefs["show_held_packages"] = new_held
+                changed = True
+
+            new_welcome = values["show_welcome"]
+            if self.prefs.get("show_welcome", True) != new_welcome:
+                self.prefs["show_welcome"] = new_welcome
                 changed = True
 
             visibility = self.prefs.setdefault("backend_visibility", {})
