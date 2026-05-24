@@ -81,13 +81,13 @@ def usage() -> int:
     """Print usage and return failure."""
     print(
         "Usage:\n"
-        "  bodhi-update-manager-root refresh\n"
-        "  bodhi-update-manager-root upgrade\n"
-        "  bodhi-update-manager-root install [PACKAGE ...]\n"
-        "  bodhi-update-manager-root install-deb PATH\n"
-        "  bodhi-update-manager-root hold PACKAGE\n"
-        "  bodhi-update-manager-root unhold PACKAGE\n"
-        "  bodhi-update-manager-root reboot",
+        "  um-actions-apt refresh\n"
+        "  um-actions-apt upgrade\n"
+        "  um-actions-apt install [PACKAGE ...]\n"
+        "  um-actions-apt install-deb PATH\n"
+        "  um-actions-apt hold PACKAGE\n"
+        "  um-actions-apt unhold PACKAGE\n"
+        "  um-actions-apt reboot",
         file=sys.stderr,
     )
     return 2
