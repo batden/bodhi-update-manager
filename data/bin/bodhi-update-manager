@@ -4,6 +4,6 @@
 
 APP_ROOT="/usr/lib/bodhi-update-manager"
 
-export PYTHONPATH="${APP_ROOT}${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="${APP_ROOT}"
 
-exec python3 -m bodhi_update.app "$@"
+exec python3 "${APP_ROOT}"/bodhi_update/app.py "$@"
