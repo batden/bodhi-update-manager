@@ -337,7 +337,7 @@ class WelcomeDialog(Gtk.Dialog):
 
         self._add_info_row(
             body_box,
-            "package-x-generic-symbolic",
+            "package-x-generic",
             _("Multiple package sources"),
             _(
                 "The update list can include supported backends such as Debian/Ubuntu "
