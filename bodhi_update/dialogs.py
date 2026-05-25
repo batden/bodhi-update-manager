@@ -301,7 +301,7 @@ class WelcomeDialog(Gtk.Dialog):
         scrolled.add(body_box)
 
         title = Gtk.Label()
-        title.set_markup(f"<b>{_('Welcome to the Update Manager')}</b>")
+        title.set_markup("<b>%s</b>" % _("Welcome to the Update Manager"))
         title.set_xalign(0.0)
         header_box.pack_start(title, False, False, 0)
 
