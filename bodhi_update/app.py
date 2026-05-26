@@ -30,8 +30,8 @@ from bodhi_update.dialogs import (
     PreferencesState,
     WelcomeDialog,
 )
-from bodhi_update.hold_controller import PackageActionController
-from bodhi_update.install_controller import InstallController
+from bodhi_update.controller.hold import PackageActionController
+from bodhi_update.controller.install import InstallController
 from bodhi_update.models import (
     CONSTRAINT_BLOCKED,
     CONSTRAINT_HELD,
@@ -39,7 +39,7 @@ from bodhi_update.models import (
     UpdateItem,
 )
 from bodhi_update.prefs import PreferencesStore
-from bodhi_update.refresh_controller import RefreshController
+from bodhi_update.controller.refresh import RefreshController
 from bodhi_update.status_messages import (
     CountStatusOptions,
     format_selected_count_status,

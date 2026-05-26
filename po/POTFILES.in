@@ -1,5 +1,5 @@
 bodhi_update/app.py
 bodhi_update/dialogs.py
-bodhi_update/hold_controller.py
-bodhi_update/refresh_controller.py
+bodhi_update/controller/hold.py
+bodhi_update/controller/refresh.py
 bodhi_update/status_messages.py
