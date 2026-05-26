@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bodhi-update-manager 0.1-3\n"
 "Report-Msgid-Bugs-To: https://github.com/flux-abyss/bodhi-update-manager/"
 "issues\n"
-"POT-Creation-Date: 2026-05-08 17:33-0400\n"
+"POT-Creation-Date: 2026-05-26 03:19-0400\n"
 "PO-Revision-Date: 2026-04-03 03:56+0530\n"
 "Last-Translator: Indraneel Rajeevan <https://github.com/indraneel12>\n"
 "Language-Team: Bodhi Team\n"
@@ -20,227 +20,248 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
 "X-Generator: Poedit 3.8\n"
 
-#: bodhi_update/app.py:104 bodhi_update/dialogs.py:70
-#: data/applications//bodhi-update-manager.in:4
-#: data/applications//bodhi-update-manager-tray.in:4
+#: bodhi_update/app.py:121 bodhi_update/dialogs.py:76
+#: data/applications/bodhi-update-manager.in:5
+#: data/applications/bodhi-update-manager-tray.in:5
 msgid "Update Manager"
 msgstr "अपडेट मैनेजर"
 
-#: bodhi_update/app.py:191
+#: bodhi_update/app.py:191 bodhi_update/app.py:1335
+#, fuzzy
+msgid "Loading cached package information..."
+msgstr "कैश्ड पैकेज जानकारी पढ़ने में विफल।"
+
+#: bodhi_update/app.py:208
 msgid "File"
 msgstr "फ़ाइल"
 
-#: bodhi_update/app.py:194 bodhi_update/app.py:271
+#: bodhi_update/app.py:211 bodhi_update/app.py:293
 msgid "Refresh"
 msgstr "रि्फ़्रेष करें"
 
-#: bodhi_update/app.py:199 bodhi_update/app.py:275
+#: bodhi_update/app.py:216 bodhi_update/app.py:297
 msgid "Install Selected"
 msgstr "चयनित इंस्टॉल करें"
 
-#: bodhi_update/app.py:206 bodhi_update/app.py:267
+#: bodhi_update/app.py:223 bodhi_update/app.py:289 bodhi_update/app.py:1366
 msgid "Select All"
 msgstr "सभी चुनें"
 
-#: bodhi_update/app.py:211 bodhi_update/app.py:263
+#: bodhi_update/app.py:228 bodhi_update/app.py:285
 msgid "Clear"
 msgstr "साफ़ करें"
 
-#: bodhi_update/app.py:218
+#: bodhi_update/app.py:235
 msgid "Quit"
 msgstr "बाहर निकलें"
 
-#: bodhi_update/app.py:226
+#: bodhi_update/app.py:243
 msgid "Edit"
 msgstr "संपादन करें"
 
-#: bodhi_update/app.py:229 bodhi_update/app.py:544
+#: bodhi_update/app.py:246 bodhi_update/app.py:607
 msgid "Preferences"
 msgstr "पसंद"
 
-#: bodhi_update/app.py:237
+#: bodhi_update/app.py:254
 msgid "View"
 msgstr "देखें"
 
-#: bodhi_update/app.py:240
+#: bodhi_update/app.py:257
 msgid "Show Descriptions"
 msgstr "विवरण दिखाएं"
 
-#: bodhi_update/app.py:250
+#: bodhi_update/app.py:268 bodhi_update/dialogs.py:258
+msgid "Welcome"
+msgstr ""
+
+#: bodhi_update/app.py:272
 msgid "Help"
 msgstr "सहायता"
 
-#: bodhi_update/app.py:253 bodhi_update/dialogs.py:78
+#: bodhi_update/app.py:275 bodhi_update/dialogs.py:84
 msgid "About"
 msgstr "विवरण"
 
-#: bodhi_update/app.py:298
+#: bodhi_update/app.py:320
 msgid "A system restart is required to complete the update."
 msgstr "अपडेट पूरा करने के लिए सिस्टम को पुनरारंभ करना आवश्यक है।"
 
-#: bodhi_update/app.py:302
+#: bodhi_update/app.py:324
 msgid "Restart Now"
 msgstr "अभी पुनरारंभ करें"
 
-#: bodhi_update/app.py:348
+#: bodhi_update/app.py:370
 msgid "Type"
 msgstr "प्रकार"
 
-#: bodhi_update/app.py:361
+#: bodhi_update/app.py:383
 msgid "Upgrade"
 msgstr "अपग्रेड"
 
-#: bodhi_update/app.py:374
+#: bodhi_update/app.py:396
 msgid "Package"
 msgstr "पैकेज"
 
-#: bodhi_update/app.py:384
+#: bodhi_update/app.py:406
 msgid "Installed"
 msgstr "इंस्टॉल किया गया"
 
-#: bodhi_update/app.py:389
+#: bodhi_update/app.py:411
 msgid "New"
 msgstr "नया"
 
-#: bodhi_update/app.py:394
+#: bodhi_update/app.py:416
 msgid "Size"
 msgstr "परिमाण"
 
-#: bodhi_update/app.py:399
+#: bodhi_update/app.py:421
 msgid "Repository"
 msgstr "रिपॉजिटरी"
 
-#: bodhi_update/app.py:436
-msgid "Installing updates..."
-msgstr "अपडेट स्थापित किए जा रहे हैं..."
-
-#: bodhi_update/app.py:441 bodhi_update/app.py:448
+#: bodhi_update/app.py:472 bodhi_update/app.py:479
 msgid "Waiting for authentication..."
 msgstr "प्रमाणीकरण की प्रतीक्षा कर रहे हैं..."
 
-#: bodhi_update/app.py:454 bodhi_update/app.py:1215
+#: bodhi_update/app.py:485 bodhi_update/app.py:1322
 msgid "Show Details"
 msgstr "विवरण दिखाएं"
 
-#: bodhi_update/app.py:458
+#: bodhi_update/app.py:489
 msgid "Back to Updates"
 msgstr "अपडेट पर वापस जाएं"
 
-#: bodhi_update/app.py:514
+#: bodhi_update/app.py:553
 msgid "All"
 msgstr "सभी"
 
-#: bodhi_update/app.py:515
+#: bodhi_update/app.py:554
 msgid "Security"
 msgstr "सुरक्षा"
 
-#: bodhi_update/app.py:516
+#: bodhi_update/app.py:555
 msgid "Kernel"
 msgstr "कर्नेल"
 
-#: bodhi_update/app.py:517
+#: bodhi_update/app.py:556
 msgid "System"
 msgstr "सिस्टम"
 
-#: bodhi_update/app.py:535
+#: bodhi_update/app.py:579
+msgid "Help is not available yet."
+msgstr ""
+
+#: bodhi_update/app.py:598
 #, fuzzy, python-format
 msgid "Show %(name)s updates"
 msgstr "स्नैप अपडेट दिखाएं"
 
-#: bodhi_update/app.py:545
+#: bodhi_update/app.py:608
 #, fuzzy
 msgid "Show notifications"
 msgstr "विवरण दिखाएं"
 
-#: bodhi_update/app.py:546
+#: bodhi_update/app.py:609
 msgid "Show held/blocked packages"
 msgstr "रोके/अवरुद्ध पैकेज दिखाएं"
 
-#: bodhi_update/app.py:547
+#: bodhi_update/app.py:610
+msgid "Show welcome screen on startup"
+msgstr ""
+
+#: bodhi_update/app.py:611
 msgid "Cancel"
 msgstr "रद्द करें"
 
-#: bodhi_update/app.py:548
+#: bodhi_update/app.py:612
 msgid "Apply"
 msgstr "लागू करें"
 
-#: bodhi_update/app.py:588
+#: bodhi_update/app.py:658
 msgid "Preferences saved."
 msgstr "पसंद सहेजी गईं।"
 
-#: bodhi_update/app.py:723 bodhi_update/refresh_controller.py:44
-#: bodhi_update/refresh_controller.py:121
+#: bodhi_update/app.py:796
 #, fuzzy
-msgid "Loading updates..."
-msgstr "अपडेट स्थापित किए जा रहे हैं..."
+msgid "Loading package information..."
+msgstr "कैश्ड पैकेज जानकारी पढ़ने में विफल।"
 
-#: bodhi_update/app.py:870
+#: bodhi_update/app.py:964
 msgid "Unhold package"
 msgstr "पैकेज को अनहोल्ड करें"
 
-#: bodhi_update/app.py:870
+#: bodhi_update/app.py:964
 #, fuzzy
 msgid "Hold package"
 msgstr "पैकेज"
 
-#: bodhi_update/app.py:953
+#: bodhi_update/app.py:1053
 #, fuzzy
 msgid "Held package"
 msgstr "सिस्टम पैकेज"
 
-#: bodhi_update/app.py:962
+#: bodhi_update/app.py:1062
 msgid "Blocked by held package or dependency constraints"
 msgstr "रोके गए पैकेज या निर्भरता प्रतिबंधों द्वारा अवरुद्ध"
 
-#: bodhi_update/app.py:968 bodhi_update/app.py:1008
-#: bodhi_update/hold_controller.py:128
+#: bodhi_update/app.py:1068 bodhi_update/app.py:1108
+#: bodhi_update/controller/hold.py:123
 msgid "System package"
 msgstr "सिस्टम पैकेज"
 
-#: bodhi_update/app.py:989
+#: bodhi_update/app.py:1089 bodhi_update/controller/hold.py:102
 msgid "N/A"
 msgstr "अनुपलब्ध"
 
-#: bodhi_update/app.py:1044
+#: bodhi_update/app.py:1144
 msgid "Failed to read cached package information."
 msgstr "कैश्ड पैकेज जानकारी पढ़ने में विफल।"
 
-#: bodhi_update/app.py:1065
+#: bodhi_update/app.py:1165
+msgid "APT backend is not configured."
+msgstr ""
+
+#: bodhi_update/app.py:1170
 #, python-format
 msgid "Installing %(deb_name)s..."
 msgstr "%(deb_name)s स्थापित किया जा रहा है..."
 
-#: bodhi_update/app.py:1070
+#: bodhi_update/app.py:1175
 msgid "Failed"
 msgstr "विफल"
 
-#: bodhi_update/app.py:1072
+#: bodhi_update/app.py:1177
 #, python-format
 msgid "Validation failed: %(exc)s"
 msgstr "सत्यापन विफल: %(exc)s"
 
-#: bodhi_update/app.py:1105
-msgid "No privilege tool found. Please reboot manually."
+#: bodhi_update/app.py:1219
+#, fuzzy
+msgid "pkexec is required. Please reboot manually."
 msgstr "कोई विशेषाधिकार उपकरण नहीं मिला। कृपया मैन्युअल रूप से रीबूट करें।"
 
-#: bodhi_update/app.py:1113
+#: bodhi_update/app.py:1221
 #, python-format
 msgid "Failed to initiate reboot: %(exc)s"
 msgstr "रीबूट शुरू करने में विफल: %(exc)s"
 
-#: bodhi_update/app.py:1198
+#: bodhi_update/app.py:1305
 msgid "No packages selected."
 msgstr "कोई पैकेज चयनित नहीं है।"
 
-#: bodhi_update/app.py:1209
+#: bodhi_update/app.py:1316
 msgid "Installing selected updates..."
 msgstr "चयनित अपडेट स्थापित किए जा रहे हैं..."
 
-#: bodhi_update/app.py:1215
+#: bodhi_update/app.py:1322
 msgid "Hide Details"
 msgstr "विवरण छुपाएं"
 
-#: bodhi_update/dialogs.py:21
+#: bodhi_update/app.py:1361
+msgid "Copy"
+msgstr ""
+
+#: bodhi_update/dialogs.py:22
 msgid ""
 "Update Manager\n"
 "\n"
@@ -250,7 +271,7 @@ msgstr ""
 "\n"
 "डेबियन आधारित डिस्ट्रो के लिए एक हल्का ग्राफिकल अपडेट मैनेजर।"
 
-#: bodhi_update/dialogs.py:27
+#: bodhi_update/dialogs.py:28
 msgid ""
 "This program is free software: you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -278,7 +299,7 @@ msgstr ""
 "आपको इस प्रोग्राम के साथ GNU जनरल पब्लिक लाइसेंस की एक प्रति प्राप्त होनी चाहिए।\n"
 "यदि नहीं, तो देखें <https://www.gnu.org/licenses/>।"
 
-#: bodhi_update/dialogs.py:48
+#: bodhi_update/dialogs.py:49
 #, fuzzy
 msgid ""
 "Website\n"
@@ -289,17 +310,22 @@ msgstr ""
 "\n"
 "    https://github.com/flux-abyss/bodhi-update-manager"
 
-#: bodhi_update/dialogs.py:53
+#: bodhi_update/dialogs.py:54
 #, fuzzy
 msgid ""
 "Credits\n"
 "\n"
-"Lead Developer:\n"
+"Developers:\n"
 "    Joseph “flux.abyss” Wiley\n"
-"\n"
-"Contributors:\n"
 "    Robert “ylee” Wiley\n"
-"    Diego “diekrz2” K."
+"    Diego “diekrz2” K.\n"
+"\n"
+"Translation:\n"
+"    Hugo Carvalho\n"
+"    Alejandro Díaz\n"
+"    Diego “diekrz2” K.\n"
+"    Indraneel Rajeevan\n"
+"    Štefan Uram"
 msgstr ""
 "क्रेडिट्स\n"
 "\n"
@@ -310,7 +336,7 @@ msgstr ""
 "        राह्बेर्ट “ylee” वैली\n"
 "        डीयेय्गो “diekrz2” के."
 
-#: bodhi_update/dialogs.py:63
+#: bodhi_update/dialogs.py:69
 #, fuzzy
 msgid ""
 "Copyright © 2026 Joseph “flux.abyss” Wiley\n"
@@ -320,133 +346,244 @@ msgstr ""
 "\n"
 "    "
 
-#: bodhi_update/dialogs.py:71
+#: bodhi_update/dialogs.py:77
 msgid "Website"
 msgstr "वेबसाइट"
 
-#: bodhi_update/dialogs.py:72
+#: bodhi_update/dialogs.py:78
 msgid "Credits"
 msgstr "क्रेडिट्स"
 
-#: bodhi_update/dialogs.py:73
+#: bodhi_update/dialogs.py:79
 msgid "License"
 msgstr "लाइसेंस"
 
-#: bodhi_update/dialogs.py:106
-msgid "Version:"
-msgstr "संस्करण:"
-
-#: bodhi_update/dialogs.py:211
+#: bodhi_update/dialogs.py:223
 msgid "Backends"
 msgstr "बैकेंड्स"
 
-#: bodhi_update/hold_controller.py:150
+#: bodhi_update/dialogs.py:268 bodhi_update/dialogs.py:412
+msgid "OK"
+msgstr ""
+
+#: bodhi_update/dialogs.py:272
+msgid "Show this welcome screen on startup"
+msgstr ""
+
+#: bodhi_update/dialogs.py:304
+#, fuzzy
+msgid "Welcome to the Update Manager"
+msgstr "अपडेट मैनेजर"
+
+#: bodhi_update/dialogs.py:310
+msgid ""
+"This update manager helps you review, select, and install available updates "
+"from supported package sources."
+msgstr ""
+
+#: bodhi_update/dialogs.py:321
+msgid "Security and system updates"
+msgstr ""
+
+#: bodhi_update/dialogs.py:323
+msgid ""
+"Important updates are highlighted so security fixes, kernel updates, and "
+"core system packages are easier to notice."
+msgstr ""
+
+#: bodhi_update/dialogs.py:331
+msgid "Review before installing"
+msgstr ""
+
+#: bodhi_update/dialogs.py:333
+msgid ""
+"Updates are shown in a clear list with package names, versions, download "
+"sizes, sources, and optional descriptions."
+msgstr ""
+
+#: bodhi_update/dialogs.py:341
+msgid "Multiple package sources"
+msgstr ""
+
+#: bodhi_update/dialogs.py:343
+msgid ""
+"The update list can include supported backends such as Debian/Ubuntu "
+"packages, Snap packages, and Flatpak packages when they are available."
+msgstr ""
+
+#: bodhi_update/dialogs.py:350
+msgid ""
+"The goal is to provide a flexible update tool that stays out of your way "
+"while still giving you clear control over what gets updated."
+msgstr ""
+
+#: bodhi_update/controller/hold.py:72
+#, fuzzy, python-format
+msgid "%(name)s reload failed. (%(exc)s)"
+msgstr "%(name)s get_updates विफल। (%(exc)s)"
+
+#: bodhi_update/controller/hold.py:159
+#, python-format
+msgid "Unknown backend: %(backend)s"
+msgstr ""
+
+#: bodhi_update/controller/hold.py:165
+#, python-format
+msgid "%(name)s does not support hold/unhold actions."
+msgstr ""
+
+#: bodhi_update/controller/hold.py:171
 msgid "Locking package..."
 msgstr "पैकेज लॉक कर रहे हैं..."
 
-#: bodhi_update/hold_controller.py:150
+#: bodhi_update/controller/hold.py:173
 msgid "Unlocking package..."
 msgstr "पैकेज अनलॉक कर रहे हैं..."
 
-#: bodhi_update/hold_controller.py:161 bodhi_update/refresh_controller.py:167
+#: bodhi_update/controller/hold.py:175
 #, fuzzy
 msgid "Waiting for authorization..."
 msgstr "प्रमाणीकरण की प्रतीक्षा कर रहे हैं..."
 
-#: bodhi_update/hold_controller.py:196
-msgid "apt-mark failed (unknown error)"
+#: bodhi_update/controller/hold.py:193
+#, fuzzy, python-format
+msgid "Failed to launch package action: %(exc)s"
+msgstr "कैश्ड पैकेज जानकारी पढ़ने में विफल।"
+
+#: bodhi_update/controller/hold.py:206
+#, fuzzy
+msgid "Package action failed (unknown error)"
 msgstr "apt-mark विफल (अज्ञात त्रुटि)"
 
-#: bodhi_update/hold_controller.py:202
-#, python-format
-msgid "Package '%(name)s' is now held."
+#: bodhi_update/controller/hold.py:213
+#, fuzzy, python-format
+msgid "%(backend)s package '%(name)s' is now held."
 msgstr "पैकेज '%(name)s' अब रोक दिया गया है।"
 
-#: bodhi_update/hold_controller.py:205
-#, python-format
-msgid "Package '%(name)s' is no longer held."
+#: bodhi_update/controller/hold.py:220
+#, fuzzy, python-format
+msgid "%(backend)s package '%(name)s' is no longer held."
 msgstr "पैकेज '%(name)s' अब रोका नहीं गया है।"
 
-#: bodhi_update/refresh_controller.py:88
+#: bodhi_update/controller/refresh.py:56
 #, python-format
 msgid "%(current_status)s — Warning: %(message)s"
 msgstr "%(current_status)s — चेतावनी: %(message)s"
 
-#: bodhi_update/refresh_controller.py:141
+#: bodhi_update/controller/refresh.py:82
+#, fuzzy, python-format
+msgid "%(name)s refresh failed. (%(exc)s)"
+msgstr "%(name)s get_updates विफल। (%(exc)s)"
+
+#: bodhi_update/controller/refresh.py:120
 #, python-format
 msgid "%(name)s get_updates failed. (%(exc)s)"
 msgstr "%(name)s get_updates विफल। (%(exc)s)"
 
-#: bodhi_update/refresh_controller.py:149
+#: bodhi_update/controller/refresh.py:128
 msgid "Package lists refreshed."
 msgstr "पैकेज सूची ताज़ा की गई।"
 
-#: bodhi_update/status_messages.py:32
+#: bodhi_update/controller/refresh.py:147
+#, fuzzy
+msgid "Refreshing package lists..."
+msgstr "पैकेज लॉक कर रहे हैं..."
+
+#: bodhi_update/controller/refresh.py:156
+#, fuzzy
+msgid "Refresh failed"
+msgstr "रि्फ़्रेष करें"
+
+#: bodhi_update/controller/refresh.py:157
+msgid "Could not refresh package lists."
+msgstr ""
+
+#: bodhi_update/status_messages.py:34
 msgid "Restart required."
 msgstr "रीस्टार्ट करना आवश्यक है।"
 
-#: bodhi_update/status_messages.py:32
+#: bodhi_update/status_messages.py:34
 msgid "Ready"
 msgstr "तैयार"
 
-#: bodhi_update/status_messages.py:38
+#: bodhi_update/status_messages.py:40
 #, python-format
 msgid "%(message)s  Restart required."
 msgstr "%(message)s  रीस्टार्ट करना आवश्यक है।"
 
-#: bodhi_update/status_messages.py:53
+#: bodhi_update/status_messages.py:55
 #, fuzzy
 msgid "System is up to date. No pending updates in cached package data."
 msgstr "सिस्टम अप-टू-डेट है। कैश्ड पैकेज डेटा दिखाया गया है।"
 
-#: bodhi_update/status_messages.py:55
+#: bodhi_update/status_messages.py:57
 msgid "System is up to date."
 msgstr "सिस्टम अप-टू-डेट है।"
 
-#: bodhi_update/status_messages.py:59 bodhi_update/status_messages.py:110
+#: bodhi_update/status_messages.py:61 bodhi_update/status_messages.py:112
 msgid "Unknown"
 msgstr "अज्ञात"
 
-#: bodhi_update/status_messages.py:64
+#: bodhi_update/status_messages.py:66
 #, fuzzy, python-format
 msgid "%(count)d update available · Download: %(size)s"
 msgid_plural "%(count)d updates available · Download: %(size)s"
 msgstr[0] "%(count)d अपडेट उपलब्ध · डाउनलोड: %(size)s"
 msgstr[1] "%(count)d अपडेट उपलब्ध · डाउनलोड: %(size)s"
 
-#: bodhi_update/status_messages.py:74
+#: bodhi_update/status_messages.py:76
 #, fuzzy, python-format
 msgid "%(message)s · Cached data — refresh to check for newer updates"
 msgstr "%(message)s · कैश्ड पैकेज डेटा"
 
-#: bodhi_update/status_messages.py:78
+#: bodhi_update/status_messages.py:80
 #, python-format
 msgid "%(message)s (includes %(extras)s)"
 msgstr "%(message)s (शामिल %(extras)s)"
 
-#: bodhi_update/status_messages.py:85
+#: bodhi_update/status_messages.py:87
 #, python-format
 msgid "%(n)d held/blocked package hidden"
 msgid_plural "%(n)d held/blocked packages hidden"
 msgstr[0] "%(n)d रोका/अवरुद्ध पैकेज छिपा हुआ है"
 msgstr[1] "%(n)d रोके/अवरुद्ध पैकेज छिपे हुए हैं"
 
-#: bodhi_update/status_messages.py:113
+#: bodhi_update/status_messages.py:115
 #, fuzzy, python-format
 msgid "%(count)d update selected · Download: %(size)s"
 msgid_plural "%(count)d updates selected · Download: %(size)s"
 msgstr[0] "%(count)d अपडेट चुना गया · डाउनलोड: %(size)s"
 msgstr[1] "%(count)d अपडेट चुना गया · डाउनलोड: %(size)s"
 
-#: data/applications//bodhi-update-manager.in:6
-#: data/applications//bodhi-update-manager-tray.in:6
+#: data/applications/bodhi-update-manager.in:6
+#: data/applications/bodhi-update-manager-tray.in:7
 msgid "Install system updates and local packages for Bodhi Linux"
 msgstr "बोधी लिनक्स के लिए सिस्टम अपडेट और स्थानीय पैकेज इंस्टॉल करें"
 
-#: data/polkit/org.bodhi.updatemanager.policy.in.h:1
+#: data/applications/bodhi-update-manager.in:14
+msgid "package;apt;dpkg;install;upgrade;"
+msgstr ""
+
+#: data/polkit/org.bodhi.updatemanager.apt.policy.in.h:1
+#: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:1
 msgid "Run the Update Manager privileged helper"
 msgstr "अपडेट मैनेजर प्रिविलेज्ड हेल्पर चलाएं"
 
-#: data/polkit/org.bodhi.updatemanager.policy.in.h:2
+#: data/polkit/org.bodhi.updatemanager.apt.policy.in.h:2
 msgid "Authentication is required to install or update packages."
 msgstr "पैकेज इंस्टॉल या अपडेट करने के लिए प्रमाणीकरण आवश्यक है।"
+
+#: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:2
+#, fuzzy
+msgid "Authentication is required to install or update snaps."
+msgstr "पैकेज इंस्टॉल या अपडेट करने के लिए प्रमाणीकरण आवश्यक है।"
+
+#~ msgid "Installing updates..."
+#~ msgstr "अपडेट स्थापित किए जा रहे हैं..."
+
+#, fuzzy
+#~ msgid "Loading updates..."
+#~ msgstr "अपडेट स्थापित किए जा रहे हैं..."
+
+#~ msgid "Version:"
+#~ msgstr "संस्करण:"

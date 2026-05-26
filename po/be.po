@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: bodhi-update-manager 0.1-3\n"
 "Report-Msgid-Bugs-To: https://github.com/flux-abyss/bodhi-update-manager/"
 "issues\n"
-"POT-Creation-Date: 2026-05-08 17:33-0400\n"
+"POT-Creation-Date: 2026-05-26 03:19-0400\n"
 "PO-Revision-Date: 2026-03-27 14:13-0400\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Bodhi Team\n"
@@ -19,228 +19,249 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: bodhi_update/app.py:104 bodhi_update/dialogs.py:70
-#: data/applications//bodhi-update-manager.in:4
-#: data/applications//bodhi-update-manager-tray.in:4
+#: bodhi_update/app.py:121 bodhi_update/dialogs.py:76
+#: data/applications/bodhi-update-manager.in:5
+#: data/applications/bodhi-update-manager-tray.in:5
 msgid "Update Manager"
 msgstr "Менеджар абнаўленняў"
 
-#: bodhi_update/app.py:191
+#: bodhi_update/app.py:191 bodhi_update/app.py:1335
+#, fuzzy
+msgid "Loading cached package information..."
+msgstr "Не ўдалося прачытаць кэшаваныя даныя пакета."
+
+#: bodhi_update/app.py:208
 msgid "File"
 msgstr "Файл"
 
-#: bodhi_update/app.py:194 bodhi_update/app.py:271
+#: bodhi_update/app.py:211 bodhi_update/app.py:293
 msgid "Refresh"
 msgstr "Абнавіць"
 
-#: bodhi_update/app.py:199 bodhi_update/app.py:275
+#: bodhi_update/app.py:216 bodhi_update/app.py:297
 msgid "Install Selected"
 msgstr "Усталяваць абранае"
 
-#: bodhi_update/app.py:206 bodhi_update/app.py:267
+#: bodhi_update/app.py:223 bodhi_update/app.py:289 bodhi_update/app.py:1366
 msgid "Select All"
 msgstr "Абраць усё"
 
-#: bodhi_update/app.py:211 bodhi_update/app.py:263
+#: bodhi_update/app.py:228 bodhi_update/app.py:285
 msgid "Clear"
 msgstr "Ачысціць"
 
-#: bodhi_update/app.py:218
+#: bodhi_update/app.py:235
 msgid "Quit"
 msgstr "Выйсці"
 
-#: bodhi_update/app.py:226
+#: bodhi_update/app.py:243
 msgid "Edit"
 msgstr "Рэдагаваць"
 
-#: bodhi_update/app.py:229 bodhi_update/app.py:544
+#: bodhi_update/app.py:246 bodhi_update/app.py:607
 msgid "Preferences"
 msgstr "Перавагі"
 
-#: bodhi_update/app.py:237
+#: bodhi_update/app.py:254
 msgid "View"
 msgstr "Выгляд"
 
-#: bodhi_update/app.py:240
+#: bodhi_update/app.py:257
 msgid "Show Descriptions"
 msgstr "Паказаць апісанні"
 
-#: bodhi_update/app.py:250
+#: bodhi_update/app.py:268 bodhi_update/dialogs.py:258
+msgid "Welcome"
+msgstr ""
+
+#: bodhi_update/app.py:272
 msgid "Help"
 msgstr "Даведка"
 
-#: bodhi_update/app.py:253 bodhi_update/dialogs.py:78
+#: bodhi_update/app.py:275 bodhi_update/dialogs.py:84
 msgid "About"
 msgstr "Аб праграме"
 
-#: bodhi_update/app.py:298
+#: bodhi_update/app.py:320
 msgid "A system restart is required to complete the update."
 msgstr "Для завяршэння абнаўлення неабходна перазагрузіць сістэму."
 
-#: bodhi_update/app.py:302
+#: bodhi_update/app.py:324
 msgid "Restart Now"
 msgstr "Перазагрузіць зараз"
 
-#: bodhi_update/app.py:348
+#: bodhi_update/app.py:370
 msgid "Type"
 msgstr "Тып"
 
-#: bodhi_update/app.py:361
+#: bodhi_update/app.py:383
 msgid "Upgrade"
 msgstr "Абнавіць"
 
-#: bodhi_update/app.py:374
+#: bodhi_update/app.py:396
 msgid "Package"
 msgstr "Пакет"
 
-#: bodhi_update/app.py:384
+#: bodhi_update/app.py:406
 msgid "Installed"
 msgstr "Усталявана"
 
-#: bodhi_update/app.py:389
+#: bodhi_update/app.py:411
 msgid "New"
 msgstr "Новае"
 
-#: bodhi_update/app.py:394
+#: bodhi_update/app.py:416
 msgid "Size"
 msgstr "Памер"
 
-#: bodhi_update/app.py:399
+#: bodhi_update/app.py:421
 msgid "Repository"
 msgstr "Рэпазіторый"
 
-#: bodhi_update/app.py:436
-msgid "Installing updates..."
-msgstr "Усталёўка абнаўленняў..."
-
-#: bodhi_update/app.py:441 bodhi_update/app.py:448
+#: bodhi_update/app.py:472 bodhi_update/app.py:479
 msgid "Waiting for authentication..."
 msgstr "Чаканне аўтэнтыфікацыі..."
 
-#: bodhi_update/app.py:454 bodhi_update/app.py:1215
+#: bodhi_update/app.py:485 bodhi_update/app.py:1322
 msgid "Show Details"
 msgstr "Паказаць падрабязнасці"
 
-#: bodhi_update/app.py:458
+#: bodhi_update/app.py:489
 msgid "Back to Updates"
 msgstr "Назад да абнаўленняў"
 
-#: bodhi_update/app.py:514
+#: bodhi_update/app.py:553
 msgid "All"
 msgstr "Усе"
 
-#: bodhi_update/app.py:515
+#: bodhi_update/app.py:554
 msgid "Security"
 msgstr "Бяспека"
 
-#: bodhi_update/app.py:516
+#: bodhi_update/app.py:555
 msgid "Kernel"
 msgstr "Ядро"
 
-#: bodhi_update/app.py:517
+#: bodhi_update/app.py:556
 msgid "System"
 msgstr "Сістэма"
 
-#: bodhi_update/app.py:535
+#: bodhi_update/app.py:579
+msgid "Help is not available yet."
+msgstr ""
+
+#: bodhi_update/app.py:598
 #, fuzzy, python-format
 msgid "Show %(name)s updates"
 msgstr "Паказваць абнаўленні Snap"
 
-#: bodhi_update/app.py:545
+#: bodhi_update/app.py:608
 #, fuzzy
 msgid "Show notifications"
 msgstr "Паказаць апісанні"
 
-#: bodhi_update/app.py:546
+#: bodhi_update/app.py:609
 msgid "Show held/blocked packages"
 msgstr "Паказаць затрыманыя/заблакаваныя пакеты"
 
-#: bodhi_update/app.py:547
+#: bodhi_update/app.py:610
+msgid "Show welcome screen on startup"
+msgstr ""
+
+#: bodhi_update/app.py:611
 msgid "Cancel"
 msgstr "Скасаваць"
 
-#: bodhi_update/app.py:548
+#: bodhi_update/app.py:612
 msgid "Apply"
 msgstr "Ужыць"
 
-#: bodhi_update/app.py:588
+#: bodhi_update/app.py:658
 msgid "Preferences saved."
 msgstr "Налады захаваны."
 
-#: bodhi_update/app.py:723 bodhi_update/refresh_controller.py:44
-#: bodhi_update/refresh_controller.py:121
+#: bodhi_update/app.py:796
 #, fuzzy
-msgid "Loading updates..."
-msgstr "Усталёўка абнаўленняў..."
+msgid "Loading package information..."
+msgstr "Не ўдалося прачытаць кэшаваныя даныя пакета."
 
-#: bodhi_update/app.py:870
+#: bodhi_update/app.py:964
 msgid "Unhold package"
 msgstr "Зняць затрыманне пакета"
 
-#: bodhi_update/app.py:870
+#: bodhi_update/app.py:964
 #, fuzzy
 msgid "Hold package"
 msgstr "Пакет"
 
-#: bodhi_update/app.py:953
+#: bodhi_update/app.py:1053
 #, fuzzy
 msgid "Held package"
 msgstr "Сістэмны пакет"
 
-#: bodhi_update/app.py:962
+#: bodhi_update/app.py:1062
 msgid "Blocked by held package or dependency constraints"
 msgstr "Заблакавана затрыманым пакетам або абмежаваннямі залежнасцей"
 
-#: bodhi_update/app.py:968 bodhi_update/app.py:1008
-#: bodhi_update/hold_controller.py:128
+#: bodhi_update/app.py:1068 bodhi_update/app.py:1108
+#: bodhi_update/controller/hold.py:123
 msgid "System package"
 msgstr "Сістэмны пакет"
 
-#: bodhi_update/app.py:989
+#: bodhi_update/app.py:1089 bodhi_update/controller/hold.py:102
 msgid "N/A"
 msgstr "Н/Д"
 
-#: bodhi_update/app.py:1044
+#: bodhi_update/app.py:1144
 msgid "Failed to read cached package information."
 msgstr "Не ўдалося прачытаць кэшаваныя даныя пакета."
 
-#: bodhi_update/app.py:1065
+#: bodhi_update/app.py:1165
+msgid "APT backend is not configured."
+msgstr ""
+
+#: bodhi_update/app.py:1170
 #, python-format
 msgid "Installing %(deb_name)s..."
 msgstr "Усталёўка %(deb_name)s..."
 
-#: bodhi_update/app.py:1070
+#: bodhi_update/app.py:1175
 msgid "Failed"
 msgstr "Не ўдалося"
 
-#: bodhi_update/app.py:1072
+#: bodhi_update/app.py:1177
 #, python-format
 msgid "Validation failed: %(exc)s"
 msgstr "Памылка праверкі: %(exc)s"
 
-#: bodhi_update/app.py:1105
-msgid "No privilege tool found. Please reboot manually."
+#: bodhi_update/app.py:1219
+#, fuzzy
+msgid "pkexec is required. Please reboot manually."
 msgstr ""
 "Інструмент прывілеяў не знойдзены. Калі ласка, перазапусціце сістэму ўручную."
 
-#: bodhi_update/app.py:1113
+#: bodhi_update/app.py:1221
 #, python-format
 msgid "Failed to initiate reboot: %(exc)s"
 msgstr "Не ўдалося ініцыяваць перазагрузку: %(exc)s"
 
-#: bodhi_update/app.py:1198
+#: bodhi_update/app.py:1305
 msgid "No packages selected."
 msgstr "Пакеты не абраны."
 
-#: bodhi_update/app.py:1209
+#: bodhi_update/app.py:1316
 msgid "Installing selected updates..."
 msgstr "Мантаж абраных абнаўленняў..."
 
-#: bodhi_update/app.py:1215
+#: bodhi_update/app.py:1322
 msgid "Hide Details"
 msgstr "Схаваць падрабязнасці"
 
-#: bodhi_update/dialogs.py:21
+#: bodhi_update/app.py:1361
+msgid "Copy"
+msgstr ""
+
+#: bodhi_update/dialogs.py:22
 msgid ""
 "Update Manager\n"
 "\n"
@@ -250,7 +271,7 @@ msgstr ""
 "\n"
 "Лёгкі графічны менеджар абнаўленняў для дыстрыбутываў на базе Debian."
 
-#: bodhi_update/dialogs.py:27
+#: bodhi_update/dialogs.py:28
 msgid ""
 "This program is free software: you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -280,7 +301,7 @@ msgstr ""
 "разам з гэтай праграмай. Калі гэта не так, глядзіце <https://www.gnu.org/"
 "licenses/>."
 
-#: bodhi_update/dialogs.py:48
+#: bodhi_update/dialogs.py:49
 #, fuzzy
 msgid ""
 "Website\n"
@@ -291,17 +312,22 @@ msgstr ""
 "\n"
 "    https://github.com/flux-abyss/bodhi-update-manager"
 
-#: bodhi_update/dialogs.py:53
+#: bodhi_update/dialogs.py:54
 #, fuzzy
 msgid ""
 "Credits\n"
 "\n"
-"Lead Developer:\n"
+"Developers:\n"
 "    Joseph “flux.abyss” Wiley\n"
-"\n"
-"Contributors:\n"
 "    Robert “ylee” Wiley\n"
-"    Diego “diekrz2” K."
+"    Diego “diekrz2” K.\n"
+"\n"
+"Translation:\n"
+"    Hugo Carvalho\n"
+"    Alejandro Díaz\n"
+"    Diego “diekrz2” K.\n"
+"    Indraneel Rajeevan\n"
+"    Štefan Uram"
 msgstr ""
 "Аўтары\n"
 "\n"
@@ -312,7 +338,7 @@ msgstr ""
 "        Роберт \"ylee\" Уайлі\n"
 "        Дыега \"diekrz2\" К."
 
-#: bodhi_update/dialogs.py:63
+#: bodhi_update/dialogs.py:69
 #, fuzzy
 msgid ""
 "Copyright © 2026 Joseph “flux.abyss” Wiley\n"
@@ -322,94 +348,185 @@ msgstr ""
 "\n"
 "    "
 
-#: bodhi_update/dialogs.py:71
+#: bodhi_update/dialogs.py:77
 msgid "Website"
 msgstr "Вэб-сайт"
 
-#: bodhi_update/dialogs.py:72
+#: bodhi_update/dialogs.py:78
 msgid "Credits"
 msgstr "Аўтары"
 
-#: bodhi_update/dialogs.py:73
+#: bodhi_update/dialogs.py:79
 msgid "License"
 msgstr "Ліцэнзія"
 
-#: bodhi_update/dialogs.py:106
-msgid "Version:"
-msgstr "Версія:"
-
-#: bodhi_update/dialogs.py:211
+#: bodhi_update/dialogs.py:223
 msgid "Backends"
 msgstr "Бэкэнды"
 
-#: bodhi_update/hold_controller.py:150
+#: bodhi_update/dialogs.py:268 bodhi_update/dialogs.py:412
+msgid "OK"
+msgstr ""
+
+#: bodhi_update/dialogs.py:272
+msgid "Show this welcome screen on startup"
+msgstr ""
+
+#: bodhi_update/dialogs.py:304
+#, fuzzy
+msgid "Welcome to the Update Manager"
+msgstr "Менеджар абнаўленняў"
+
+#: bodhi_update/dialogs.py:310
+msgid ""
+"This update manager helps you review, select, and install available updates "
+"from supported package sources."
+msgstr ""
+
+#: bodhi_update/dialogs.py:321
+msgid "Security and system updates"
+msgstr ""
+
+#: bodhi_update/dialogs.py:323
+msgid ""
+"Important updates are highlighted so security fixes, kernel updates, and "
+"core system packages are easier to notice."
+msgstr ""
+
+#: bodhi_update/dialogs.py:331
+msgid "Review before installing"
+msgstr ""
+
+#: bodhi_update/dialogs.py:333
+msgid ""
+"Updates are shown in a clear list with package names, versions, download "
+"sizes, sources, and optional descriptions."
+msgstr ""
+
+#: bodhi_update/dialogs.py:341
+msgid "Multiple package sources"
+msgstr ""
+
+#: bodhi_update/dialogs.py:343
+msgid ""
+"The update list can include supported backends such as Debian/Ubuntu "
+"packages, Snap packages, and Flatpak packages when they are available."
+msgstr ""
+
+#: bodhi_update/dialogs.py:350
+msgid ""
+"The goal is to provide a flexible update tool that stays out of your way "
+"while still giving you clear control over what gets updated."
+msgstr ""
+
+#: bodhi_update/controller/hold.py:72
+#, fuzzy, python-format
+msgid "%(name)s reload failed. (%(exc)s)"
+msgstr "%(name)s get_updates не ўдалося. (%(exc)s)"
+
+#: bodhi_update/controller/hold.py:159
+#, python-format
+msgid "Unknown backend: %(backend)s"
+msgstr ""
+
+#: bodhi_update/controller/hold.py:165
+#, python-format
+msgid "%(name)s does not support hold/unhold actions."
+msgstr ""
+
+#: bodhi_update/controller/hold.py:171
 msgid "Locking package..."
 msgstr "Блакаванне пакета..."
 
-#: bodhi_update/hold_controller.py:150
+#: bodhi_update/controller/hold.py:173
 msgid "Unlocking package..."
 msgstr "Разблакаванне пакета..."
 
-#: bodhi_update/hold_controller.py:161 bodhi_update/refresh_controller.py:167
+#: bodhi_update/controller/hold.py:175
 #, fuzzy
 msgid "Waiting for authorization..."
 msgstr "Чаканне аўтэнтыфікацыі..."
 
-#: bodhi_update/hold_controller.py:196
-msgid "apt-mark failed (unknown error)"
+#: bodhi_update/controller/hold.py:193
+#, fuzzy, python-format
+msgid "Failed to launch package action: %(exc)s"
+msgstr "Не ўдалося прачытаць кэшаваныя даныя пакета."
+
+#: bodhi_update/controller/hold.py:206
+#, fuzzy
+msgid "Package action failed (unknown error)"
 msgstr "apt-mark не ўдалося (невядомая памылка)"
 
-#: bodhi_update/hold_controller.py:202
-#, python-format
-msgid "Package '%(name)s' is now held."
+#: bodhi_update/controller/hold.py:213
+#, fuzzy, python-format
+msgid "%(backend)s package '%(name)s' is now held."
 msgstr "Пакет '%(name)s' цяпер затрыманы."
 
-#: bodhi_update/hold_controller.py:205
-#, python-format
-msgid "Package '%(name)s' is no longer held."
+#: bodhi_update/controller/hold.py:220
+#, fuzzy, python-format
+msgid "%(backend)s package '%(name)s' is no longer held."
 msgstr "Пакет '%(name)s' больш не затрыманы."
 
-#: bodhi_update/refresh_controller.py:88
+#: bodhi_update/controller/refresh.py:56
 #, python-format
 msgid "%(current_status)s — Warning: %(message)s"
 msgstr "%(current_status)s — Папярэджанне: %(message)s"
 
-#: bodhi_update/refresh_controller.py:141
+#: bodhi_update/controller/refresh.py:82
+#, fuzzy, python-format
+msgid "%(name)s refresh failed. (%(exc)s)"
+msgstr "%(name)s get_updates не ўдалося. (%(exc)s)"
+
+#: bodhi_update/controller/refresh.py:120
 #, python-format
 msgid "%(name)s get_updates failed. (%(exc)s)"
 msgstr "%(name)s get_updates не ўдалося. (%(exc)s)"
 
-#: bodhi_update/refresh_controller.py:149
+#: bodhi_update/controller/refresh.py:128
 msgid "Package lists refreshed."
 msgstr "Спісы пакетаў абноўлены."
 
-#: bodhi_update/status_messages.py:32
+#: bodhi_update/controller/refresh.py:147
+#, fuzzy
+msgid "Refreshing package lists..."
+msgstr "Блакаванне пакета..."
+
+#: bodhi_update/controller/refresh.py:156
+#, fuzzy
+msgid "Refresh failed"
+msgstr "Абнавіць"
+
+#: bodhi_update/controller/refresh.py:157
+msgid "Could not refresh package lists."
+msgstr ""
+
+#: bodhi_update/status_messages.py:34
 msgid "Restart required."
 msgstr "Патрабуецца перазагрузка."
 
-#: bodhi_update/status_messages.py:32
+#: bodhi_update/status_messages.py:34
 msgid "Ready"
 msgstr "Гатова"
 
-#: bodhi_update/status_messages.py:38
+#: bodhi_update/status_messages.py:40
 #, python-format
 msgid "%(message)s  Restart required."
 msgstr "%(message)s  Патрабуецца перазагрузка."
 
-#: bodhi_update/status_messages.py:53
+#: bodhi_update/status_messages.py:55
 #, fuzzy
 msgid "System is up to date. No pending updates in cached package data."
 msgstr "Сістэма абноўлена. Паказаныя закэшаваныя дадзеныя пакетаў."
 
-#: bodhi_update/status_messages.py:55
+#: bodhi_update/status_messages.py:57
 msgid "System is up to date."
 msgstr "Сістэма абноўлена."
 
-#: bodhi_update/status_messages.py:59 bodhi_update/status_messages.py:110
+#: bodhi_update/status_messages.py:61 bodhi_update/status_messages.py:112
 msgid "Unknown"
 msgstr "Невядома"
 
-#: bodhi_update/status_messages.py:64
+#: bodhi_update/status_messages.py:66
 #, fuzzy, python-format
 msgid "%(count)d update available · Download: %(size)s"
 msgid_plural "%(count)d updates available · Download: %(size)s"
@@ -417,17 +534,17 @@ msgstr[0] "%(count)d абнаўленне даступна · Спампавац
 msgstr[1] "%(count)d абнаўленне даступна · Спампаваць: %(size)s"
 msgstr[2] "%(count)d абнаўленне даступна · Спампаваць: %(size)s"
 
-#: bodhi_update/status_messages.py:74
+#: bodhi_update/status_messages.py:76
 #, fuzzy, python-format
 msgid "%(message)s · Cached data — refresh to check for newer updates"
 msgstr "%(message)s · Кэшаваныя даныя пакета"
 
-#: bodhi_update/status_messages.py:78
+#: bodhi_update/status_messages.py:80
 #, python-format
 msgid "%(message)s (includes %(extras)s)"
 msgstr "%(message)s (уключае %(extras)s)"
 
-#: bodhi_update/status_messages.py:85
+#: bodhi_update/status_messages.py:87
 #, python-format
 msgid "%(n)d held/blocked package hidden"
 msgid_plural "%(n)d held/blocked packages hidden"
@@ -435,7 +552,7 @@ msgstr[0] "%(n)d затрыманы/заблакаваны пакет схава
 msgstr[1] "%(n)d затрыманыя/заблакаваныя пакеты схаваныя"
 msgstr[2] "%(n)d затрыманых/заблакаваных пакетаў схавана"
 
-#: bodhi_update/status_messages.py:113
+#: bodhi_update/status_messages.py:115
 #, fuzzy, python-format
 msgid "%(count)d update selected · Download: %(size)s"
 msgid_plural "%(count)d updates selected · Download: %(size)s"
@@ -443,15 +560,35 @@ msgstr[0] "%(count)d абнаўленне абрана · Сцягванне: %(
 msgstr[1] "%(count)d абнаўленне абрана · Сцягванне: %(size)s"
 msgstr[2] "%(count)d абнаўленне абрана · Сцягванне: %(size)s"
 
-#: data/applications//bodhi-update-manager.in:6
-#: data/applications//bodhi-update-manager-tray.in:6
+#: data/applications/bodhi-update-manager.in:6
+#: data/applications/bodhi-update-manager-tray.in:7
 msgid "Install system updates and local packages for Bodhi Linux"
 msgstr "Усталяваць сістэмныя абнаўленні і лакальныя пакеты для Bodhi Linux"
 
-#: data/polkit/org.bodhi.updatemanager.policy.in.h:1
+#: data/applications/bodhi-update-manager.in:14
+msgid "package;apt;dpkg;install;upgrade;"
+msgstr ""
+
+#: data/polkit/org.bodhi.updatemanager.apt.policy.in.h:1
+#: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:1
 msgid "Run the Update Manager privileged helper"
 msgstr "Запусціць прывілеяваны дапаможнік Update Manager"
 
-#: data/polkit/org.bodhi.updatemanager.policy.in.h:2
+#: data/polkit/org.bodhi.updatemanager.apt.policy.in.h:2
 msgid "Authentication is required to install or update packages."
 msgstr "Патрабуецца аўтэнтыфікацыя для ўсталявання або абнаўлення пакетаў."
+
+#: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:2
+#, fuzzy
+msgid "Authentication is required to install or update snaps."
+msgstr "Патрабуецца аўтэнтыфікацыя для ўсталявання або абнаўлення пакетаў."
+
+#~ msgid "Installing updates..."
+#~ msgstr "Усталёўка абнаўленняў..."
+
+#, fuzzy
+#~ msgid "Loading updates..."
+#~ msgstr "Усталёўка абнаўленняў..."
+
+#~ msgid "Version:"
+#~ msgstr "Версія:"
