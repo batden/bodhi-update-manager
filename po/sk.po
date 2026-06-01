@@ -26,9 +26,8 @@ msgid "Update Manager"
 msgstr "Správca aktualizácií Bodhi"
 
 #: bodhi_update/app.py:191 bodhi_update/app.py:1335
-#, fuzzy
 msgid "Loading cached package information..."
-msgstr "Nepodarilo sa načítať uložené informácie o balíkoch."
+msgstr "Načítavajú sa uložené informácie o balíkoch..."
 
 #: bodhi_update/app.py:208
 msgid "File"
@@ -72,7 +71,7 @@ msgstr "Zobraziť popisy"
 
 #: bodhi_update/app.py:268 bodhi_update/dialogs.py:258
 msgid "Welcome"
-msgstr ""
+msgstr "Vitajte"
 
 #: bodhi_update/app.py:272
 msgid "Help"
@@ -148,7 +147,7 @@ msgstr "Systém"
 
 #: bodhi_update/app.py:579
 msgid "Help is not available yet."
-msgstr ""
+msgstr "Pomocník zatiaľ nie je dostupný."
 
 #: bodhi_update/app.py:598
 #, python-format
@@ -165,7 +164,7 @@ msgstr "Zobraziť podržané/blokované balíčky"
 
 #: bodhi_update/app.py:610
 msgid "Show welcome screen on startup"
-msgstr ""
+msgstr "Zobraziť uvítaciu obrazovku pri spustení"
 
 #: bodhi_update/app.py:611
 msgid "Cancel"
@@ -180,9 +179,8 @@ msgid "Preferences saved."
 msgstr "Nastavenia uložené."
 
 #: bodhi_update/app.py:796
-#, fuzzy
 msgid "Loading package information..."
-msgstr "Nepodarilo sa načítať uložené informácie o balíkoch."
+msgstr "Načítavajú sa informácie o balíkoch..."
 
 #: bodhi_update/app.py:964
 msgid "Unhold package"
@@ -215,7 +213,7 @@ msgstr "Nepodarilo sa načítať uložené informácie o balíkoch."
 
 #: bodhi_update/app.py:1165
 msgid "APT backend is not configured."
-msgstr ""
+msgstr "Backend APT nie je nakonfigurovaný."
 
 #: bodhi_update/app.py:1170
 #, python-format
@@ -232,9 +230,8 @@ msgid "Validation failed: %(exc)s"
 msgstr "Overenie zlyhalo: %(exc)s"
 
 #: bodhi_update/app.py:1219
-#, fuzzy
 msgid "pkexec is required. Please reboot manually."
-msgstr "Nenašiel sa nástroj na získanie oprávnení. Reštartujte manuálne."
+msgstr "Je vyžadovaný pkexec. Reštartujte systém manuálne."
 
 #: bodhi_update/app.py:1221
 #, python-format
@@ -255,7 +252,7 @@ msgstr "Skryť podrobnosti"
 
 #: bodhi_update/app.py:1361
 msgid "Copy"
-msgstr ""
+msgstr "Kopírovať"
 
 #: bodhi_update/dialogs.py:22
 msgid ""
@@ -307,7 +304,6 @@ msgstr ""
 "https://github.com/flux-abyss/bodhi-update-manager"
 
 #: bodhi_update/dialogs.py:54
-#, fuzzy
 msgid ""
 "Credits\n"
 "\n"
@@ -325,12 +321,17 @@ msgid ""
 msgstr ""
 "Autori\n"
 "\n"
-"Hlavný vývojár:\n"
+"Vývojári:\n"
 "    Joseph „flux.abyss“ Wiley\n"
-"\n"
-"Prispievatelia:\n"
 "    Robert „ylee“ Wiley\n"
-"    Diego „diekrz2“ K."
+"    Diego „diekrz2“ K.\n"
+"\n"
+"Preklady:\n"
+"    Hugo Carvalho\n"
+"    Alejandro Díaz\n"
+"    Diego „diekrz2“ K.\n"
+"    Indraneel Rajeevan\n"
+"    Štefan Uram"
 
 #: bodhi_update/dialogs.py:69
 msgid ""
@@ -358,73 +359,83 @@ msgstr "Zdroje aktualizácií"
 
 #: bodhi_update/dialogs.py:268 bodhi_update/dialogs.py:412
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: bodhi_update/dialogs.py:272
 msgid "Show this welcome screen on startup"
-msgstr ""
+msgstr "Zobraziť túto uvítaciu obrazovku pri spustení"
 
 #: bodhi_update/dialogs.py:304
-#, fuzzy
 msgid "Welcome to the Update Manager"
-msgstr "Správca aktualizácií Bodhi"
+msgstr "Vitajte v Správcovi aktualizácií"
 
 #: bodhi_update/dialogs.py:310
 msgid ""
 "This update manager helps you review, select, and install available updates "
 "from supported package sources."
 msgstr ""
+"Tento správca aktualizácií vám pomáha kontrolovať, vyberať a inštalovať "
+"dostupné aktualizácie z podporovaných zdrojov balíkov."
+
 
 #: bodhi_update/dialogs.py:321
 msgid "Security and system updates"
-msgstr ""
+msgstr "Bezpečnostné a systémové aktualizácie"
 
 #: bodhi_update/dialogs.py:323
 msgid ""
 "Important updates are highlighted so security fixes, kernel updates, and "
 "core system packages are easier to notice."
 msgstr ""
+"Dôležité aktualizácie sú zvýraznené, aby bolo jednoduchšie rozpoznať "
+"bezpečnostné opravy, aktualizácie jadra a kľúčové systémové balíky."
 
 #: bodhi_update/dialogs.py:331
 msgid "Review before installing"
-msgstr ""
+msgstr "Kontrola pred inštaláciou"
 
 #: bodhi_update/dialogs.py:333
 msgid ""
 "Updates are shown in a clear list with package names, versions, download "
 "sizes, sources, and optional descriptions."
 msgstr ""
+"Aktualizácie sú zobrazené v prehľadnom zozname s názvami balíkov, verziami, "
+"veľkosťami na stiahnutie, zdrojmi a voliteľnými popismi."
 
 #: bodhi_update/dialogs.py:341
 msgid "Multiple package sources"
-msgstr ""
+msgstr "Viacero zdrojov balíkov"
 
 #: bodhi_update/dialogs.py:343
 msgid ""
 "The update list can include supported backends such as Debian/Ubuntu "
 "packages, Snap packages, and Flatpak packages when they are available."
 msgstr ""
+"Zoznam aktualizácií môže zahŕňať podporované zdroje, ako sú balíky "
+"Debian/Ubuntu, Snap balíky a Flatpak balíky, ak sú dostupné."
 
 #: bodhi_update/dialogs.py:350
 msgid ""
 "The goal is to provide a flexible update tool that stays out of your way "
 "while still giving you clear control over what gets updated."
 msgstr ""
+"Cieľom je poskytnúť flexibilný nástroj na aktualizácie, ktorý vás nebude "
+"vyrušovať, no zároveň vám poskytne jasnú kontrolu nad tým, čo sa aktualizuje."
 
 #: bodhi_update/controller/hold.py:72
-#, fuzzy, python-format
+#, python-format
 msgid "%(name)s reload failed. (%(exc)s)"
-msgstr "%(name)s get_updates zlyhalo. (%(exc)s)"
+msgstr "%(name)s opätovné načítanie zlyhalo. (%(exc)s)"
 
 #: bodhi_update/controller/hold.py:159
 #, python-format
 msgid "Unknown backend: %(backend)s"
-msgstr ""
+msgstr "Neznámy backend: %(backend)s"
 
 #: bodhi_update/controller/hold.py:165
 #, python-format
 msgid "%(name)s does not support hold/unhold actions."
-msgstr ""
+msgstr "%(name)s nepodporuje akcie podržania/zrušenia podržania."
 
 #: bodhi_update/controller/hold.py:171
 msgid "Locking package..."
@@ -439,24 +450,23 @@ msgid "Waiting for authorization..."
 msgstr "Čaká sa na autorizáciu..."
 
 #: bodhi_update/controller/hold.py:193
-#, fuzzy, python-format
+#, python-format
 msgid "Failed to launch package action: %(exc)s"
-msgstr "Nepodarilo sa načítať uložené informácie o balíkoch."
+msgstr "Nepodarilo sa spustiť akciu balíka: %(exc)s"
 
 #: bodhi_update/controller/hold.py:206
-#, fuzzy
 msgid "Package action failed (unknown error)"
-msgstr "apt-mark zlyhal (neznáma chyba)"
+msgstr "Akcia balíka zlyhala (neznáma chyba)"
 
 #: bodhi_update/controller/hold.py:213
-#, fuzzy, python-format
+#, python-format
 msgid "%(backend)s package '%(name)s' is now held."
-msgstr "Balík '%(name)s' je teraz podržaný."
+msgstr "Balík '%(name)s' v backende %(backend)s je teraz podržaný."
 
 #: bodhi_update/controller/hold.py:220
-#, fuzzy, python-format
+#, python-format
 msgid "%(backend)s package '%(name)s' is no longer held."
-msgstr "Balík '%(name)s' už nie je podržaný."
+msgstr "Balík '%(name)s' v backende %(backend)s už nie je podržaný."
 
 #: bodhi_update/controller/refresh.py:56
 #, python-format
@@ -464,9 +474,9 @@ msgid "%(current_status)s — Warning: %(message)s"
 msgstr "%(current_status)s — Upozornenie: %(message)s"
 
 #: bodhi_update/controller/refresh.py:82
-#, fuzzy, python-format
+#, python-format
 msgid "%(name)s refresh failed. (%(exc)s)"
-msgstr "%(name)s get_updates zlyhalo. (%(exc)s)"
+msgstr "Obnovenie %(name)s zlyhalo. (%(exc)s)"
 
 #: bodhi_update/controller/refresh.py:120
 #, python-format
@@ -478,18 +488,16 @@ msgid "Package lists refreshed."
 msgstr "Zoznam balíkov obnovený."
 
 #: bodhi_update/controller/refresh.py:147
-#, fuzzy
 msgid "Refreshing package lists..."
-msgstr "Zamyká sa balík..."
+msgstr "Obnovujú sa zoznamy balíkov..."
 
 #: bodhi_update/controller/refresh.py:156
-#, fuzzy
 msgid "Refresh failed"
-msgstr "Obnoviť"
+msgstr "Obnovenie zlyhalo"
 
 #: bodhi_update/controller/refresh.py:157
 msgid "Could not refresh package lists."
-msgstr ""
+msgstr "Nepodarilo sa obnoviť zoznamy balíkov."
 
 #: bodhi_update/status_messages.py:34
 msgid "Restart required."
@@ -559,7 +567,7 @@ msgstr "Inštalovať systémové aktualizácie a lokálne balíky pre Bodhi Linu
 
 #: data/applications/bodhi-update-manager.in:14
 msgid "package;apt;dpkg;install;upgrade;"
-msgstr ""
+msgstr "balík;apt;dpkg;inštalovať;aktualizovať;"
 
 #: data/polkit/org.bodhi.updatemanager.apt.policy.in.h:1
 #: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:1
@@ -571,15 +579,6 @@ msgid "Authentication is required to install or update packages."
 msgstr "Na inštaláciu alebo aktualizáciu balíkov je potrebné overenie"
 
 #: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:2
-#, fuzzy
 msgid "Authentication is required to install or update snaps."
-msgstr "Na inštaláciu alebo aktualizáciu balíkov je potrebné overenie"
+msgstr "Na inštaláciu alebo aktualizáciu balíkov Snap je potrebné overenie."
 
-#~ msgid "Installing updates..."
-#~ msgstr "Inštalujú sa aktualizácie..."
-
-#~ msgid "Loading updates..."
-#~ msgstr "Načítavajú sa aktualizácie..."
-
-#~ msgid "Version:"
-#~ msgstr "Verzia:"
