@@ -14,7 +14,7 @@ DEFAULT_PREFS: dict[str, Any] = {
     "show_descriptions": True,
     "show_notifications": True,
     "show_held_packages": False,
-    "show_welcome": True,
+    "show_welcome": False,
     "show_snap": True,
     "show_flatpak": True,
     "backend_visibility": {},
@@ -26,19 +26,43 @@ class PreferencesStore:
 
     def __init__(
         self,
-        app_name: str = "bodhi-update-manager",
+        app_name: str = APP_NAME,
         defaults: dict[str, Any] | None = None,
     ) -> None:
         self.app_name = app_name
-        self.defaults = dict(defaults or DEFAULT_PREFS)
+        self.defaults = dict(DEFAULT_PREFS if defaults is None else defaults)
 
-    def get_path(self) -> str:
-        """Return the JSON preferences file path."""
+    def config_dir(self) -> str:
+        """Return the application config directory."""
         config_home = os.environ.get(
             "XDG_CONFIG_HOME",
             os.path.expanduser("~/.config"),
         )
-        return os.path.join(config_home, self.app_name, "prefs.json")
+        return os.path.join(config_home, self.app_name)
+
+    def get_path(self) -> str:
+        """Return the JSON preferences file path."""
+        return os.path.join(self.config_dir(), "prefs.json")
+
+    def first_run_marker_path(self) -> str:
+        """Return the first-run marker path."""
+        return os.path.join(self.config_dir(), "first-run")
+
+    def is_first_run(self) -> bool:
+        """Return True if the first-run marker does not exist."""
+        return not os.path.exists(self.first_run_marker_path())
+
+    def mark_first_run_done(self) -> bool:
+        """Create the first-run marker. Return True on success."""
+        path = self.first_run_marker_path()
+        try:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "a", encoding="utf-8"):
+                pass
+        except OSError as exc:
+            log.error("Could not create first-run marker at %s: %s", path, exc)
+            return False
+        return True
 
     def load(self) -> dict[str, Any]:
         """Load preferences from disk, falling back to defaults."""

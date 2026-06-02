@@ -571,7 +571,7 @@ class UpdateManagerWindow(Gtk.Window):
         """Display the welcome dialog manually."""
         dialog = WelcomeDialog(
             self,
-            show_on_startup=self.prefs.get("show_welcome", True),
+            show_on_startup=self.prefs.get("show_welcome", False),
         )
         response = dialog.run()
 
@@ -579,17 +579,21 @@ class UpdateManagerWindow(Gtk.Window):
             self.set_status(_("Help is not available yet."))
 
         new_value = dialog.get_show_on_startup()
-        if self.prefs.get("show_welcome", True) != new_value:
+        if self.prefs.get("show_welcome", False) != new_value:
             self.prefs["show_welcome"] = new_value
             self.pref_store.save(self.prefs)
 
         dialog.destroy()
 
-    def _maybe_show_welcome_dialog(self) -> bool:
-        """Show the welcome dialog on startup if enabled in preferences."""
-        if self.prefs.get("show_welcome", True):
+    def _maybe_show_welcome_dialog(self) -> None:
+        """Show the welcome dialog on startup if enabled in preferences or on first run."""
+        if self.pref_store.is_first_run():
             self._show_welcome_dialog()
-        return False
+            self.pref_store.mark_first_run_done()
+            return
+
+        if self.prefs.get("show_welcome", False):
+            self._show_welcome_dialog()
 
     def _show_preferences_dialog(self) -> None:
         backend_states = [
@@ -614,7 +618,7 @@ class UpdateManagerWindow(Gtk.Window):
                     PreferencesState(
                         show_notifications=self.prefs.get("show_notifications", True),
                         show_held_packages=self.prefs.get("show_held_packages", False),
-                        show_welcome=self.prefs.get("show_welcome", True),
+                        show_welcome=self.prefs.get("show_welcome", False),
                         backend_states=backend_states,
                     ),
                 )
@@ -630,9 +634,9 @@ class UpdateManagerWindow(Gtk.Window):
                 self.prefs["show_notifications"] = new_notif
                 changed = True
                 if not new_notif:
-                    app = self.get_application()
-                    if app is not None and hasattr(app, "set_tray_count"):
-                        app.set_tray_count(0)
+                     app = self.get_application()
+                     if app is not None and hasattr(app, "set_tray_count"):
+                         app.set_tray_count(0)
 
             new_held = values["show_held_packages"]
             if self.prefs.get("show_held_packages", False) != new_held:
@@ -640,7 +644,7 @@ class UpdateManagerWindow(Gtk.Window):
                 changed = True
 
             new_welcome = values["show_welcome"]
-            if self.prefs.get("show_welcome", True) != new_welcome:
+            if self.prefs.get("show_welcome", False) != new_welcome:
                 self.prefs["show_welcome"] = new_welcome
                 changed = True
 
