@@ -83,7 +83,7 @@ msgstr "O aplikácii"
 
 #: bodhi_update/app.py:320
 msgid "A system restart is required to complete the update."
-msgstr "Na dokončenie aktualizácie je potrebný reštart."
+msgstr "Na dokončenie aktualizácie je potrebné reštartovať systém."
 
 #: bodhi_update/app.py:324
 msgid "Restart Now"
@@ -119,7 +119,7 @@ msgstr "Repozitár"
 
 #: bodhi_update/app.py:472 bodhi_update/app.py:479
 msgid "Waiting for authentication..."
-msgstr "Čaká sa na overenie..."
+msgstr "Čaká sa na autentifikáciu..."
 
 #: bodhi_update/app.py:485 bodhi_update/app.py:1322
 msgid "Show Details"
@@ -152,7 +152,7 @@ msgstr "Pomocník zatiaľ nie je dostupný."
 #: bodhi_update/app.py:598
 #, python-format
 msgid "Show %(name)s updates"
-msgstr "Zobraziť %(name)s aktualizácie"
+msgstr "Zobraziť aktualizácie %(name)s"
 
 #: bodhi_update/app.py:608
 msgid "Show notifications"
@@ -160,7 +160,7 @@ msgstr "Zobraziť oznámenia"
 
 #: bodhi_update/app.py:609
 msgid "Show held/blocked packages"
-msgstr "Zobraziť podržané/blokované balíčky"
+msgstr "Zobraziť podržané/blokované balíky"
 
 #: bodhi_update/app.py:610
 msgid "Show welcome screen on startup"
@@ -377,7 +377,6 @@ msgstr ""
 "Tento správca aktualizácií vám pomáha kontrolovať, vyberať a inštalovať "
 "dostupné aktualizácie z podporovaných zdrojov balíkov."
 
-
 #: bodhi_update/dialogs.py:321
 msgid "Security and system updates"
 msgstr "Bezpečnostné a systémové aktualizácie"
@@ -548,9 +547,9 @@ msgstr "%(message)s (zahŕňa %(extras)s)"
 #, python-format
 msgid "%(n)d held/blocked package hidden"
 msgid_plural "%(n)d held/blocked packages hidden"
-msgstr[0] "Skrytý %(n)d podržaný/blokovaný balíček"
-msgstr[1] "Skryté %(n)d podržané/blokované balíčky"
-msgstr[2] "Skrytých %(n)d podržaných/blokovaných balíčkov"
+msgstr[0] "Skrytý %(n)d podržaný/blokovaný balík"
+msgstr[1] "Skryté %(n)d podržané/blokované balíky"
+msgstr[2] "Skrytých %(n)d podržaných/blokovaných balíkov"
 
 #: bodhi_update/status_messages.py:115
 #, python-format
@@ -576,7 +575,7 @@ msgstr "Spustiť pomocný nástroj Správcu aktualizácií s oprávneniami"
 
 #: data/polkit/org.bodhi.updatemanager.apt.policy.in.h:2
 msgid "Authentication is required to install or update packages."
-msgstr "Na inštaláciu alebo aktualizáciu balíkov je potrebné overenie"
+msgstr "Na inštaláciu alebo aktualizáciu balíkov je potrebné overenie."
 
 #: data/polkit/org.bodhi.updatemanager.snap.policy.in.h:2
 msgid "Authentication is required to install or update snaps."
